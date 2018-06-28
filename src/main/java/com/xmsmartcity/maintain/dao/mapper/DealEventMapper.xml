@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.DealEventMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.DealEvent">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="has_company" jdbcType="SMALLINT" property="hasCompany" />
+    <result column="has_project" jdbcType="SMALLINT" property="hasProject" />
+    <result column="has_info" jdbcType="SMALLINT" property="hasInfo" />
+    <result column="has_fault_info" jdbcType="SMALLINT" property="hasFaultInfo" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, has_company, has_project, has_info, has_fault_info, is_del, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from deal_event
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 根据用户ID查询 -->
+  <select id="selectByUserId" parameterType="int" resultMap="BaseResultMap" >
+	SELECT 
+    	de.id,
+    	de.user_id,
+		de.has_company,
+		de.has_project,
+		de.has_fault_info,
+		de.has_info,
+		de.is_del
+	FROM deal_event de 
+	INNER JOIN `user` u ON de.user_id = u.id and u.is_del = 0
+	LEFT JOIN company c ON de.user_id = c.responser_id
+	LEFT JOIN project p ON p.company_id = c.id
+	WHERE de.user_id = #{userId}
+	GROUP BY de.id
+  </select>
+  
+  <!-- 团队负责人查询 -->
+  <select id="selectByCompanyPrincipal" parameterType="map" resultMap="BaseResultMap" >
+	SELECT 
+		de.id,
+		de.user_id,
+		CASE c.is_del when 0 THEN 1 ELSE de.has_company end as has_company,
+		CASE when p.is_del = 0 THEN 1 
+		WHEN (select COUNT(pu.is_del)
+			from `user` u 
+			LEFT JOIN project_user pu ON pu.user_id = u.id 
+				AND pu.is_del = 0
+			WHERE u.company_id = #{companyId}) > 0 
+		THEN 1 
+		WHEN (select COUNT(p.is_del)
+			from `user` u
+			LEFT JOIN project p ON p.create_user_id = u.id
+				AND p.is_del = 0
+			WHERE u.company_id = #{companyId}) > 0 
+		THEN 1 ELSE de.has_project end as has_project,
+		de.has_fault_info,
+		de.has_info,
+		de.is_del
+	FROM deal_event de 
+	INNER JOIN `user` u ON de.user_id = u.id and u.is_del = 0
+	LEFT JOIN company c ON de.user_id = c.responser_id
+	LEFT JOIN project p ON p.company_id = c.id
+	WHERE de.user_id = #{userId}
+	GROUP BY de.id
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from deal_event
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.DealEvent">
+    insert into deal_event (id, user_id, has_company, 
+      has_project, has_info, has_fault_info, 
+      is_del, updatetime)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{hasCompany,jdbcType=SMALLINT}, 
+      #{hasProject,jdbcType=SMALLINT}, #{hasInfo,jdbcType=SMALLINT}, #{hasFaultInfo,jdbcType=SMALLINT}, 
+      #{isDel,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.DealEvent">
+    insert into deal_event
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="hasCompany != null">
+        has_company,
+      </if>
+      <if test="hasProject != null">
+        has_project,
+      </if>
+      <if test="hasInfo != null">
+        has_info,
+      </if>
+      <if test="hasFaultInfo != null">
+        has_fault_info,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="hasCompany != null">
+        #{hasCompany,jdbcType=SMALLINT},
+      </if>
+      <if test="hasProject != null">
+        #{hasProject,jdbcType=SMALLINT},
+      </if>
+      <if test="hasInfo != null">
+        #{hasInfo,jdbcType=SMALLINT},
+      </if>
+      <if test="hasFaultInfo != null">
+        #{hasFaultInfo,jdbcType=SMALLINT},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.DealEvent">
+    update deal_event
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="hasCompany != null">
+        has_company = #{hasCompany,jdbcType=SMALLINT},
+      </if>
+      <if test="hasProject != null">
+        has_project = #{hasProject,jdbcType=SMALLINT},
+      </if>
+      <if test="hasInfo != null">
+        has_info = #{hasInfo,jdbcType=SMALLINT},
+      </if>
+      <if test="hasFaultInfo != null">
+        has_fault_info = #{hasFaultInfo,jdbcType=SMALLINT},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.DealEvent">
+    update deal_event
+    set user_id = #{userId,jdbcType=INTEGER},
+      has_company = #{hasCompany,jdbcType=SMALLINT},
+      has_project = #{hasProject,jdbcType=SMALLINT},
+      has_info = #{hasInfo,jdbcType=SMALLINT},
+      has_fault_info = #{hasFaultInfo,jdbcType=SMALLINT},
+      is_del = #{isDel,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

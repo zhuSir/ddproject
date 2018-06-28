@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.PatrolSchemeRecordItemMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.PatrolSchemeRecordItem">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="patrol_scheme_item_id" jdbcType="INTEGER" property="patrolSchemeItemId" />
+    <result column="patrol_scheme_record_id" jdbcType="INTEGER" property="patrolSchemeRecordId" />
+    <result column="is_normal" jdbcType="INTEGER" property="isNormal" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+  </resultMap>
+  
+  <resultMap id="ResultMap" type="com.xmsmartcity.maintain.pojo.PatrolSchemeRecordItem" extends="BaseResultMap" >
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="patrolSchemeItem_introduce" jdbcType="VARCHAR" property="patrolSchemeItemIntroduce" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, patrol_scheme_item_id, patrol_scheme_record_id, is_normal, introduce, remark, 
+    is_del
+  </sql>
+  
+   <sql id="Rel_Column_List">
+    psri.id, psri.patrol_scheme_item_id, psri.patrol_scheme_record_id, psri.is_normal, psri.introduce, psri.remark, 
+    psri.is_del
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from patrol_scheme_record_item
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from patrol_scheme_record_item
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.PatrolSchemeRecordItem">
+    insert into patrol_scheme_record_item (id, patrol_scheme_item_id, patrol_scheme_record_id, 
+      is_normal, introduce, remark, 
+      is_del)
+    values (#{id,jdbcType=INTEGER}, #{patrolSchemeItemId,jdbcType=INTEGER}, #{patrolSchemeRecordId,jdbcType=INTEGER}, 
+      #{isNormal,jdbcType=INTEGER}, #{introduce,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{isDel,jdbcType=INTEGER})
+  </insert>
+  
+  <!-- 批量保存 -->
+	<insert id="insertBatch" parameterType="java.util.List"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into patrol_scheme_record_item (patrol_scheme_item_id, patrol_scheme_record_id, 
+      	is_normal, introduce)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.patrolSchemeItemId},#{item.patrolSchemeRecordId},#{item.isNormal},#{item.introduce})
+		</foreach>
+	</insert>
+  
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.PatrolSchemeRecordItem" keyProperty="id">
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+        	SELECT LAST_INSERT_ID() AS id
+    </selectKey>
+    insert into patrol_scheme_record_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="patrolSchemeItemId != null">
+        patrol_scheme_item_id,
+      </if>
+      <if test="patrolSchemeRecordId != null">
+        patrol_scheme_record_id,
+      </if>
+      <if test="isNormal != null">
+        is_normal,
+      </if>
+      <if test="introduce != null">
+        introduce,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="patrolSchemeItemId != null">
+        #{patrolSchemeItemId,jdbcType=INTEGER},
+      </if>
+      <if test="patrolSchemeRecordId != null">
+        #{patrolSchemeRecordId,jdbcType=INTEGER},
+      </if>
+      <if test="isNormal != null">
+        #{isNormal,jdbcType=INTEGER},
+      </if>
+      <if test="introduce != null">
+        #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.PatrolSchemeRecordItem">
+    update patrol_scheme_record_item
+    <set>
+      <if test="patrolSchemeItemId != null">
+        patrol_scheme_item_id = #{patrolSchemeItemId,jdbcType=INTEGER},
+      </if>
+      <if test="patrolSchemeRecordId != null">
+        patrol_scheme_record_id = #{patrolSchemeRecordId,jdbcType=INTEGER},
+      </if>
+      <if test="isNormal != null">
+        is_normal = #{isNormal,jdbcType=INTEGER},
+      </if>
+      <if test="introduce != null">
+        introduce = #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.PatrolSchemeRecordItem">
+    update patrol_scheme_record_item
+    set patrol_scheme_item_id = #{patrolSchemeItemId,jdbcType=INTEGER},
+      patrol_scheme_record_id = #{patrolSchemeRecordId,jdbcType=INTEGER},
+      is_normal = #{isNormal,jdbcType=INTEGER},
+      introduce = #{introduce,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 根据巡检记录ID删除明细 -->
+   <delete id="deleteByPatrolSchemeRecordId" parameterType="java.lang.Integer">
+    delete from patrol_scheme_record_item
+    where patrol_scheme_record_id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+   <!-- 根据记录ID查询明细 -->
+   <select id="selectByRecord" parameterType="com.xmsmartcity.maintain.pojo.PatrolSchemeRecordItem" resultMap="BaseResultMap">
+    select 
+     <include refid="Rel_Column_List" />,psi.name,psi.number,psi.introduce as patrolSchemeItemIntroduce,
+    GROUP_CONCAT(e.equip_name) as equipName,GROUP_CONCAT(e.id) as equipId
+    from patrol_scheme_record_item psri
+    left join patrol_scheme_item psi on psi.id=psri.patrol_scheme_item_id and psi.is_del=0
+    left join scheme_record_item_equip sre on sre.patrol_scheme_record_item_id=psri.id
+    left join equips e on e.id=sre.equip_id and e.is_del=0
+    where psri.patrol_scheme_record_id = #{patrolSchemeRecordId,jdbcType=INTEGER} and psri.is_del=0
+    GROUP BY psri.id
+  </select>
+</mapper>

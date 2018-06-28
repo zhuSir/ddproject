@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.FuncregMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.Funcreg">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
+    <result column="is_leaf" jdbcType="INTEGER" property="isLeaf" />
+    <result column="weight" jdbcType="INTEGER" property="weight" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, parent_id, type, permission, is_leaf, weight, level
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from funcreg
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from funcreg
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.Funcreg">
+    insert into funcreg (id, name, parent_id, 
+      type, permission, is_leaf, 
+      weight, level)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER}, 
+      #{type,jdbcType=INTEGER}, #{permission,jdbcType=VARCHAR}, #{isLeaf,jdbcType=INTEGER}, 
+      #{weight,jdbcType=INTEGER}, #{level,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.Funcreg">
+    insert into funcreg
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="permission != null">
+        permission,
+      </if>
+      <if test="isLeaf != null">
+        is_leaf,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="permission != null">
+        #{permission,jdbcType=VARCHAR},
+      </if>
+      <if test="isLeaf != null">
+        #{isLeaf,jdbcType=INTEGER},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.Funcreg">
+    update funcreg
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="permission != null">
+        permission = #{permission,jdbcType=VARCHAR},
+      </if>
+      <if test="isLeaf != null">
+        is_leaf = #{isLeaf,jdbcType=INTEGER},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.Funcreg">
+    update funcreg
+    set name = #{name,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      permission = #{permission,jdbcType=VARCHAR},
+      is_leaf = #{isLeaf,jdbcType=INTEGER},
+      weight = #{weight,jdbcType=INTEGER},
+      level = #{level,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

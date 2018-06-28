@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.EquipsMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.Equips">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="service_type_id" jdbcType="INTEGER" property="serviceTypeId" />
+    <result column="equip_name" jdbcType="VARCHAR" property="equipName" />
+    <result column="equip_code" jdbcType="VARCHAR" property="equipCode" />
+    <result column="equip_model" jdbcType="VARCHAR" property="equipModel" />
+    <result column="firm" jdbcType="VARCHAR" property="firm" />
+    <result column="equip_type_id" jdbcType="INTEGER" property="equipTypeId" />
+    <result column="equip_detail" jdbcType="VARCHAR" property="equipDetail" />
+    <result column="lng" jdbcType="VARCHAR" property="lng" />
+    <result column="lat" jdbcType="VARCHAR" property="lat" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="equip_user_name" jdbcType="VARCHAR" property="equipUserName" />
+    <result column="equip_use_mobile" jdbcType="VARCHAR" property="equipUseMobile" />
+    <result column="equip_maintain_name" jdbcType="VARCHAR" property="equipMaintainName" />
+    <result column="equip_maintain_mobile" jdbcType="VARCHAR" property="equipMaintainMobile" />
+    <result column="equip_eqcode_path" jdbcType="VARCHAR" property="equipEqcodePath" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="creattime" jdbcType="TIMESTAMP" property="creattime" />
+    <result column="creat_user_id" jdbcType="INTEGER" property="creatUserId" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  
+  <resultMap id="RelResultMap" type="com.xmsmartcity.maintain.pojo.Equips" extends="BaseResultMap" >
+  	<result column="project_id" jdbcType="VARCHAR" property="projectId" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, service_type_id, equip_name, equip_code, equip_model, firm, equip_type_id, equip_detail, 
+    lng, lat, province, city, area, address,equip_user_name, equip_use_mobile, equip_maintain_name, equip_maintain_mobile, equip_eqcode_path, 
+    is_del, creattime, creat_user_id, updatetime, update_user_id, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from equips
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from equips
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!-- 批量保存 -->
+  <insert id="insertBatch" parameterType="java.util.List"	useGeneratedKeys="true" keyProperty="id">
+    insert into equips (equip_name, equip_code,equip_model, firm,equip_type_id, equip_detail, lng,lat,province,city,area,address,creattime,creat_user_id)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.equipName},#{item.equipCode},#{item.equipModel},#{item.firm},#{item.equipTypeId},#{item.equipDetail},#{item.lng},#{item.lat},#{item.province},#{item.city},#{item.area},#{item.address},#{item.creattime},#{item.creatUserId})
+    </foreach>
+  </insert>
+
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.Equips">
+    insert into equips (id, service_type_id, equip_name, 
+      equip_code, equip_model, firm, 
+      equip_type_id, equip_detail, lng, lat, province, city, area, address, equip_user_name, 
+      equip_use_mobile, equip_maintain_name, equip_maintain_mobile, 
+      equip_eqcode_path, is_del, creattime, 
+      creat_user_id, updatetime, update_user_id, 
+      remark)
+    values (#{id,jdbcType=INTEGER}, #{serviceTypeId,jdbcType=INTEGER}, #{equipName,jdbcType=VARCHAR}, 
+      #{equipCode,jdbcType=VARCHAR}, #{equipModel,jdbcType=VARCHAR}, #{firm,jdbcType=VARCHAR}, 
+      #{equipTypeId,jdbcType=INTEGER}, #{equipDetail,jdbcType=VARCHAR}, #{lng,jdbcType=VARCHAR}, 
+      #{lat,jdbcType=VARCHAR},#{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{area,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{equipUserName,jdbcType=VARCHAR}, 
+      #{equipUseMobile,jdbcType=VARCHAR}, #{equipMaintainName,jdbcType=VARCHAR}, #{equipMaintainMobile,jdbcType=VARCHAR}, 
+      #{equipEqcodePath,jdbcType=VARCHAR}, #{isDel,jdbcType=INTEGER}, #{creattime,jdbcType=TIMESTAMP}, 
+      #{creatUserId,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.Equips">
+    insert into equips
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="serviceTypeId != null">
+        service_type_id,
+      </if>
+      <if test="equipName != null">
+        equip_name,
+      </if>
+      <if test="equipCode != null">
+        equip_code,
+      </if>
+      <if test="equipModel != null">
+        equip_model,
+      </if>
+      <if test="firm != null">
+        firm,
+      </if>
+      <if test="equipTypeId != null">
+        equip_type_id,
+      </if>
+      <if test="equipDetail != null">
+        equip_detail,
+      </if>
+      <if test="lng != null">
+        lng,
+      </if>
+      <if test="lat != null">
+        lat,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="equipUserName != null">
+        equip_user_name,
+      </if>
+      <if test="equipUseMobile != null">
+        equip_use_mobile,
+      </if>
+      <if test="equipMaintainName != null">
+        equip_maintain_name,
+      </if>
+      <if test="equipMaintainMobile != null">
+        equip_maintain_mobile,
+      </if>
+      <if test="equipEqcodePath != null">
+        equip_eqcode_path,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="creattime != null">
+        creattime,
+      </if>
+      <if test="creatUserId != null">
+        creat_user_id,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="serviceTypeId != null">
+        #{serviceTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="equipName != null">
+        #{equipName,jdbcType=VARCHAR},
+      </if>
+      <if test="equipCode != null">
+        #{equipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="equipModel != null">
+        #{equipModel,jdbcType=VARCHAR},
+      </if>
+      <if test="firm != null">
+        #{firm,jdbcType=VARCHAR},
+      </if>
+      <if test="equipTypeId != null">
+        #{equipTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="equipDetail != null">
+        #{equipDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="lng != null">
+        #{lng,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="equipUserName != null">
+        #{equipUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="equipUseMobile != null">
+        #{equipUseMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="equipMaintainName != null">
+        #{equipMaintainName,jdbcType=VARCHAR},
+      </if>
+      <if test="equipMaintainMobile != null">
+        #{equipMaintainMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="equipEqcodePath != null">
+        #{equipEqcodePath,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="creattime != null">
+        #{creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creatUserId != null">
+        #{creatUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.Equips">
+    update equips
+    <set>
+      <if test="serviceTypeId != null">
+        service_type_id = #{serviceTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="equipName != null">
+        equip_name = #{equipName,jdbcType=VARCHAR},
+      </if>
+      <if test="equipCode != null">
+        equip_code = #{equipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="equipModel != null">
+        equip_model = #{equipModel,jdbcType=VARCHAR},
+      </if>
+      <if test="firm != null">
+        firm = #{firm,jdbcType=VARCHAR},
+      </if>
+      <if test="equipTypeId != null">
+        equip_type_id = #{equipTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="equipDetail != null">
+        equip_detail = #{equipDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="lng != null">
+        lng = #{lng,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        lat = #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="equipUserName != null">
+        equip_user_name = #{equipUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="equipUseMobile != null">
+        equip_use_mobile = #{equipUseMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="equipMaintainName != null">
+        equip_maintain_name = #{equipMaintainName,jdbcType=VARCHAR},
+      </if>
+      <if test="equipMaintainMobile != null">
+        equip_maintain_mobile = #{equipMaintainMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="equipEqcodePath != null">
+        equip_eqcode_path = #{equipEqcodePath,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="creattime != null">
+        creattime = #{creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creatUserId != null">
+        creat_user_id = #{creatUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.Equips">
+    update equips
+    set service_type_id = #{serviceTypeId,jdbcType=INTEGER},
+      equip_name = #{equipName,jdbcType=VARCHAR},
+      equip_code = #{equipCode,jdbcType=VARCHAR},
+      equip_model = #{equipModel,jdbcType=VARCHAR},
+      firm = #{firm,jdbcType=VARCHAR},
+      equip_type_id = #{equipTypeId,jdbcType=INTEGER},
+      equip_detail = #{equipDetail,jdbcType=VARCHAR},
+      lng = #{lng,jdbcType=VARCHAR},
+      lat = #{lat,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      equip_user_name = #{equipUserName,jdbcType=VARCHAR},
+      equip_use_mobile = #{equipUseMobile,jdbcType=VARCHAR},
+      equip_maintain_name = #{equipMaintainName,jdbcType=VARCHAR},
+      equip_maintain_mobile = #{equipMaintainMobile,jdbcType=VARCHAR},
+      equip_eqcode_path = #{equipEqcodePath,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER},
+      creattime = #{creattime,jdbcType=TIMESTAMP},
+      creat_user_id = #{creatUserId,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="deleteById" parameterType="com.xmsmartcity.maintain.pojo.Equips">
+  update equips
+    set is_del=1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getEquipsList" parameterType="map" resultMap="RelResultMap">
+  select DISTINCT
+  e.id, e.service_type_id, e.equip_name,e.equip_code, e.equip_model, e.firm,e.equip_type_id, t.equips_type_name as equipTypeName, e.equip_detail, e.equip_user_name, 
+    e.equip_use_mobile, e.equip_maintain_name, e.equip_maintain_mobile, e.equip_eqcode_path,e.creat_user_id as creatUserId,'0' as sumTime,'0' as avgScore,
+    e.province, e.city, e.area, e.address,p.id as projectId,e.creattime
+  from equips e
+  left join equips_type t on e.equip_type_id=t.id
+  LEFT JOIN service_type s on s.id=e.service_type_id and s.is_del=0
+  LEFT JOIN project p ON p.id=s.project_id and p.is_del=0
+  left join project_user pu on p.id=pu.project_id and pu.is_del=0
+  left join user u on u.id=pu.user_id and u.is_del=0
+  left join user uc on uc.company_id=u.company_id and uc.is_del=0 and uc.id=#{userId,jdbcType=INTEGER}
+  where (e.creat_user_id=#{userId,jdbcType=INTEGER} or uc.id=#{userId,jdbcType=INTEGER})
+  <if test="record.id !=null and record.id !=0">
+  	and e.id=#{record.id,jdbcType=INTEGER}
+  </if>
+  <if test="record.equipTypeId !=null and record.equipTypeId !=0">
+  	and e.equip_type_id=#{record.equipTypeId,jdbcType=INTEGER}
+  </if>
+  <if test="record.equipName != null and record.equipName !=''">
+     and e.equip_name like concat('%',#{record.equipName},'%')
+  </if>
+  <if test="record.serviceTypeId !=null and record.serviceTypeId !=0">
+     and pu.project_id=#{record.serviceTypeId,jdbcType=INTEGER}
+  </if>
+  <if test="startIndex !=null and pageSize !=null">
+  ORDER BY CONVERT( e.equip_name USING gbk ) COLLATE gbk_chinese_ci ASC
+  LIMIT #{startIndex},#{pageSize}
+  </if>
+  </select>
+  
+  <!-- 获取设备评分 -->
+  <select id="getEquipsAvg" parameterType="map" resultType="java.lang.Integer">
+   SELECT DISTINCT IFNULL(SUM((ev.res_speed+ev.maintain_quality)/2)/COUNT(f.id),0) as avgScore FROM equips e 
+ 	LEFT JOIN fault_info f on f.equip_id=e.id AND f.is_add=0
+ 	LEFT JOIN evaluate ev on f.id and ev.is_del=0
+ 	WHERE e.id=#{id,jdbcType=INTEGER} and e.is_del=0 and ev.res_speed is not NULL and ev.maintain_quality is not null
+  </select>
+  
+  <!-- 获取设备维修时长 -->
+  <select id="getEquipsSumTime" parameterType="map" resultType="java.lang.Integer">
+   SELECT DISTINCT IFNULL(SUM(TIMESTAMPDIFF(MINUTE,f.createtime,m.createtime)),0) as sumTime FROM equips e 
+	LEFT JOIN fault_info f on f.equip_id=e.id and f.is_del=0
+	LEFT JOIN maintain_operate_log m on m.fault_info_id=f.id and m.is_del=0
+	WHERE e.id=#{id,jdbcType=INTEGER} and e.is_del=0 and m.state=8 
+  </select>
+  
+  <select id="selectEquipCodeMax" parameterType="map" resultType="java.lang.String">
+	SELECT 
+	CASE WHEN ISNULL(MAX(SUBSTRING(equip_code,LENGTH(#{headCode,jdbcType=VARCHAR})+1))) THEN 0 ELSE MAX(SUBSTRING(equip_code,LENGTH(#{headCode,jdbcType=VARCHAR})+1)) END as maxNum 
+	FROM equips
+	WHERE equip_code LIKE CONCAT(#{headCode,jdbcType=VARCHAR},'%')
+  </select>
+  
+ <select id="selectProjectByEquip" parameterType="map" resultType="map">
+  select DISTINCT p.id,p.name,p.state,p.create_user_id as createUserId,
+  p.introduce,p.owner_id as ownerId,p.owner_name as ownerName,p.owner_phone as ownerPhone,p.pic as pics
+  from equips e
+  left join service_type s on s.id=e.service_type_id and s.is_del=0
+  left join project p on s.project_id=p.id and p.is_del=0
+  where e.id=#{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 设备概览数量统计 -->
+  <select id="getSummaryByEquip" parameterType="map" resultType="map">
+	select case when sum(case when date_format(t.createtime,'%Y-%m')=date_format(now(),'%Y-%m') then 1 else 0 end) is null then 0 else 
+		sum(case when date_format(t.createtime,'%Y-%m')=date_format(now(),'%Y-%m') then 1 else 0 end)  end as month_count,
+		count(t.id) as sum_count 
+	FROM(
+  	select DISTINCT f.id,f.state, f.createtime,p.id as projectId,p.name as projectName,f.service_type_id as serviceTypeId,s.name as serviceTypeName
+  	from equips e 
+  	left join fault_info f on f.equip_id=e.id and f.is_del=0
+  	LEFT JOIN project p on p.id=f.project_id AND p.is_del=0    #查询项目名称
+	LEFT JOIN project_user pu on pu.project_id=f.project_id AND pu.is_leader=1 and pu.is_del=0   #查询项目负责人
+  	left join service_type s on s.id=f.service_type_id and s.is_del=0
+  	left join index_user_fault i on i.fault_info_id=f.id
+	LEFT JOIN `user` uc on uc.phone=f.fault_user_mobile and uc.is_del=0
+	LEFT JOIN company c on uc.company_id=c.id and c.is_del=0   #查询团队负责人
+	LEFT JOIN `user` u on (u.id=c.responser_id or u.id=pu.user_id or f.fault_user_mobile=u.phone)
+	where u.id=#{userId,jdbcType=INTEGER} and e.id=#{id,jdbcType=INTEGER} and e.is_del=0) t
+  </select>
+  <!-- 设备概览处理中 -->
+  <select id="getProcessingByEquip"  parameterType="map" resultType="map">
+  	select DISTINCT f.id as faultInfoId,f.createtime,f.state,f.`level`,f.introduce,f.updatetime,(UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(f.updatetime))/60 as compareTime,p.id as projectId,p.name as projectName,p.pic as pics,f.position as position,f.service_type_id as serviceTypeId,s.name as serviceTypeName
+  	from equips e 
+  	left join fault_info f on f.equip_id=e.id and f.is_del=0 and f.state in(1,2,3,4,5,6,7,8)
+	LEFT JOIN project p on p.id=f.project_id AND p.is_del=0    #查询项目名称
+	LEFT JOIN project_user pu on pu.project_id=f.project_id AND pu.is_leader=1 and pu.is_del=0   #查询项目负责人
+  	left join service_type s on s.id=f.service_type_id and s.is_del=0
+  	left join index_user_fault i on i.fault_info_id=f.id
+	LEFT JOIN `user` uc on uc.phone=f.fault_user_mobile and uc.is_del=0
+	LEFT JOIN company c on uc.company_id=c.id and c.is_del=0   #查询团队负责人
+	LEFT JOIN `user` u on (u.id=c.responser_id or u.id=pu.user_id or f.fault_user_mobile=u.phone)
+	where  u.id=#{userId,jdbcType=INTEGER} and e.id=#{id,jdbcType=INTEGER} and e.is_del=0
+	order by f.updatetime desc
+	<if test="startIndex !=null and pageSize !=null">
+  	LIMIT #{startIndex},#{pageSize}
+ 	 </if>
+  </select>
+  
+  <select id="getServiceByEquipCode" parameterType="map" resultType="map">
+  	select e.id, e.service_type_id as serviceTypeId, e.equip_name as equipName, e.equip_code as equipCode, e.equip_model as equipModel, firm, equip_type_id as equipTypeId, equip_detail as equipDetail, 
+    e.equip_user_name, e.equip_use_mobile, e.equip_maintain_name, e.equip_maintain_mobile,s.name as serviceName,p.owner_name as faultUserName,p.owner_phone as faultUserMobile,p.name as projectName,
+    p.id as projectId,e.lng, e.lat, e.province, e.city, e.area, e.address
+    from equips e 
+    left join service_type s on s.id=e.service_type_id and s.is_del=0
+    left join project p on p.id=s.project_id and p.is_del=0
+ 	where e.equip_code=#{equipCode}
+  </select>
+  
+  <select id="selectByIds" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	 select 
+    <include refid="Base_Column_List" />
+    from equips
+    where id in(${ids})
+  </select>
+  
+    <!-- web 设备列表页面 -->
+  <select id="selectListByPage" parameterType="map" resultType="map" >
+  	select DISTINCT
+	  e.id, e.service_type_id, e.equip_name,e.equip_code, e.equip_model, e.firm,e.equip_type_id, t.equips_type_name as equipTypeName, e.equip_detail, e.equip_user_name, 
+	  e.equip_use_mobile, e.equip_maintain_name, e.equip_maintain_mobile, e.equip_eqcode_path,e.creat_user_id as creatUserId,'0' as sumTime,'0' as avgScore,
+		s.`name` service_type_name,p.`name` project_name,
+		(select IF(COUNT(DISTINCT fi.id) > 0,1,0)from fault_info fi WHERE fi.state &lt; 9 AND fi.project_id = p.id) fault_state
+	from equips e
+	left join equips_type t on e.equip_type_id=t.id
+	left JOIN service_type s on s.id=e.service_type_id and s.is_del=0
+	LEFT JOIN project p ON p.id=s.project_id and p.is_del=0
+	left join project_user pu on p.id=pu.project_id and pu.is_del=0
+	LEFT JOIN `user` u on u.id=e.creat_user_id
+	LEFT JOIN `user` uc on uc.company_id=u.company_id and uc.id=#{userId,jdbcType=INTEGER}
+	where uc.id=#{userId,jdbcType=INTEGER}
+  </select>
+
+  <!-- 设备批量关联项目 -->
+  <update id="updateByPrimaryKeyBatch" parameterType="map" >
+    UPDATE equips
+    SET service_type_id = #{serviceTypeId}
+    WHERE id in
+    <foreach collection="list" index="index" item="item" open="(" separator= "," close=")" >
+      #{item}
+    </foreach>
+  </update>
+
+  <!-- 根据参数获取设备对象 -->
+  <select id="selectByParams" parameterType="map" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from equips WHERE is_del = 0
+    <if test="userId != null">
+      AND CREATE_USER_ID = #{userId}
+    </if>
+    <if test="equipId != null">
+      AND ID = #{equipId}
+    </if>
+    <if test="serviceTypeId != null">
+      AND service_type_id = #{serviceTypeId}
+    </if>
+    limit 0,1
+  </select>
+
+  <!-- 取消关联项目（设备类型ID） -->
+  <update id="unJoinByEquipTypeId" parameterType="java.lang.Integer" >
+    UPDATE equips
+    SET service_type_id = 0
+    WHERE equip_type_id = #{equipTypeId,jdbcType=INTEGER} 
+  </update>
+  
+  <!-- 查询设备关联设备 -->
+  <select id="selectListByRelevance" parameterType="map"  resultType="map" >
+  	<choose>
+  		<!-- 公司下未关联设备 -->
+  		<when test="projectId == null">
+  			select 
+  				e.id, e.service_type_id, e.equip_name,e.equip_code, e.equip_model,
+	  			e.firm,e.equip_type_id,e.equip_detail, e.equip_user_name,
+				e.equip_use_mobile, e.equip_maintain_name,
+				e.equip_maintain_mobile, e.equip_eqcode_path,e.creat_user_id as creatUserId,
+		  		et.equips_type_name as equipTypeName
+			from equips e 
+			INNER JOIN equips_type et ON e.equip_type_id = et.id
+			INNER JOIN `user` u ON e.creat_user_id = u.id
+			WHERE u.company_id = #{companyId} AND (e.service_type_id is null or e.service_type_id = 0)
+			<if test="equipName != null and equipName !='' ">
+				AND	e.equip_name like concat('%',#{equipName},'%')
+			</if>
+  		</when>
+  		<!-- 项目下关联的设备 -->
+  		<otherwise>
+  			select 
+				e.id, e.service_type_id, e.equip_name,e.equip_code, e.equip_model,
+	  			e.firm,e.equip_type_id,e.equip_detail, e.equip_user_name,
+				e.equip_use_mobile, e.equip_maintain_name,
+				e.equip_maintain_mobile, e.equip_eqcode_path,e.creat_user_id as creatUserId,
+		  		et.equips_type_name as equipTypeName,st.project_id as projectId
+			from equips e 
+			INNER JOIN equips_type et ON e.equip_type_id = et.id
+			INNER JOIN service_type st ON e.service_type_id = st.id
+			WHERE st.project_id = #{projectId}
+			<if test="equipName != null and equipName !='' ">
+				AND	e.equip_name like concat('%',#{equipName},'%')
+			</if>
+  		</otherwise>
+  	</choose>
+  	
+  </select>
+  
+    <!-- 获取设备列表（通过项目ID） -->
+  <select id="selectByServiceTypeId" parameterType="map" resultMap="BaseResultMap">
+  	 select 
+    <include refid="Base_Column_List" />
+    from equips
+    where is_del = 0 
+    and service_type_id = #{serviceTypeId}
+    <if test="startIndex !=null and pageSize !=null">
+  	LIMIT #{startIndex},#{pageSize}
+ 	</if>
+  </select>
+  
+      <!-- 获取设备列表（通过搜索） -->
+  <select id="listBySearch" parameterType="map" resultMap="BaseResultMap">
+  	 select 
+    <include refid="Base_Column_List" />
+    from equips
+    where is_del = 0 
+    <if test="equipName!=null and equipName !='' ">
+    	and equip_name like concat('%',#{equipName},'%')
+    </if>
+    <if test="serviceTypeId != null and serviceTypeId !=0 ">
+    	and service_type_id = #{serviceTypeId}
+    </if>
+    <if test="startIndex !=null and pageSize !=null">
+  	LIMIT #{startIndex},#{pageSize}
+ 	</if>
+  </select>
+</mapper>

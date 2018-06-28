@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.SchemeEquipMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.SchemeEquip">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="patrol_scheme_id" jdbcType="INTEGER" property="patrolSchemeId" />
+    <result column="equip_id" jdbcType="INTEGER" property="equipId" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, patrol_scheme_id, equip_id, createtime, create_user_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from scheme_equip
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from scheme_equip
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteByPatrolSchemeId" parameterType="java.lang.Integer">
+    delete from scheme_equip
+    where patrol_scheme_id = #{patrolSchemeId,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.SchemeEquip">
+    insert into scheme_equip (id, patrol_scheme_id, equip_id, 
+      createtime, create_user_id)
+    values (#{id,jdbcType=INTEGER}, #{patrolSchemeId,jdbcType=INTEGER}, #{equipId,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{createUserId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.SchemeEquip">
+    insert into scheme_equip
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="patrolSchemeId != null">
+        patrol_scheme_id,
+      </if>
+      <if test="equipId != null">
+        equip_id,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="patrolSchemeId != null">
+        #{patrolSchemeId,jdbcType=INTEGER},
+      </if>
+      <if test="equipId != null">
+        #{equipId,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  	<!-- 批量保存 -->
+   <insert id="insertBatch" parameterType="java.util.List"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into scheme_equip (patrol_scheme_id,equip_id,
+		createtime, create_user_id)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.patrolSchemeId},#{item.equipId},#{item.createtime},#{item.createUserId})
+		</foreach>
+	</insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.SchemeEquip">
+    update scheme_equip
+    <set>
+      <if test="patrolSchemeId != null">
+        patrol_scheme_id = #{patrolSchemeId,jdbcType=INTEGER},
+      </if>
+      <if test="equipId != null">
+        equip_id = #{equipId,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.SchemeEquip">
+    update scheme_equip
+    set patrol_scheme_id = #{patrolSchemeId,jdbcType=INTEGER},
+      equip_id = #{equipId,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

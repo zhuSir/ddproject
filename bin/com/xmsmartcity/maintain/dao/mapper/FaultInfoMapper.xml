@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.FaultInfoMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.FaultInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="company_id" jdbcType="INTEGER" property="companyId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="fault_user_name" jdbcType="VARCHAR" property="faultUserName" />
+    <result column="fault_user_mobile" jdbcType="VARCHAR" property="faultUserMobile" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="service_type_id" jdbcType="INTEGER" property="serviceTypeId" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="lng" jdbcType="VARCHAR" property="lng" />
+    <result column="lat" jdbcType="VARCHAR" property="lat" />
+    <result column="position" jdbcType="VARCHAR" property="position" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="receivetime" jdbcType="TIMESTAMP" property="receivetime" />
+    <result column="appointment_time" jdbcType="TIMESTAMP" property="appointmentTime" />
+    <result column="equip_id" jdbcType="INTEGER" property="equipId" />
+    <result column="pics" jdbcType="VARCHAR" property="pics" />
+    <result column="fault_type" jdbcType="INTEGER" property="faultType" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="is_add" jdbcType="INTEGER" property="isAdd" />
+    <result column="maintain_state" jdbcType="INTEGER" property="maintainState" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+  </resultMap>
+  
+  <resultMap id="ResultMap" type="com.xmsmartcity.maintain.pojo.FaultInfo" extends="BaseResultMap" >
+    <result column="maintain_user_name" jdbcType="VARCHAR" property="maintainUserName" />
+    <result column="maintain_user_mobile" jdbcType="VARCHAR" property="maintainUserMobile" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="project_pic" jdbcType="VARCHAR" property="projectPic" />
+    <result column="service_type_name" jdbcType="VARCHAR" property="serviceTypeName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+     id, company_id, user_id, code, level, fault_user_name, fault_user_mobile, project_id, 
+    service_type_id, introduce, lng, lat, position, createtime, receivetime, appointment_time, 
+    equip_id, pics, fault_type, state, is_add, maintain_state, updatetime, is_del
+  </sql>
+  
+  <sql id="Rel_Column_List">
+    f.id, f.company_id, f.user_id, f.code, f.level, f.fault_user_name, f.fault_user_mobile, 
+    f.project_id, f.service_type_id, f.introduce, f.position,f.lng,f.lat, f.createtime, f.receivetime,f.appointment_time,
+    f.equip_id,f.pics, f.fault_type, f.state, f.is_add, f.maintain_state, f.updatetime, f.is_del
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from fault_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 公司统计报障单列表 -->
+  <select id="selectListByStateType" parameterType="map" resultMap="ResultMap">
+	  <choose>
+	  	<!-- 乙方 -->
+	  	<when test="type == 1">
+	  		<if test=" state == 1">
+	  			select 
+				f.id,f.is_add,f.user_id,st.id service_type_id,f.state,
+					f.project_id,f.service_type_id,f.fault_user_name, 
+					f.fault_user_mobile,f.pics,f.maintain_state,f.fault_type,
+					f. LEVEL,f.CODE,st.name AS service_type_name,f.createtime,f.appointment_time,
+					f.introduce,f.pics,f.lng,f.lat,DATE_FORMAT(f.receivetime,'%Y-%m-%d %T') AS receiveTime,
+					f.receivetime,f.position,p.pic AS projectPic,p. NAME AS project_name,
+					CONCAT(p.province,p.city,p.area,p.address) AS projectAddress,
+					p.owner_id,st.maintain_user_name,st.maintain_user_mobile
+				from fault_info f 
+				INNER JOIN service_type st ON st.id = f.service_type_id
+				INNER JOIN project p ON p.id = f.project_id
+				LEFT JOIN index_user_fault iuf ON f.id = iuf.fault_info_id
+				WHERE 
+					(f.company_id = #{companyId} or f.fault_user_mobile in 
+						(select id from `user` WHERE company_id = #{companyId} ))
+				AND f.state &lt; 7
+				<if test="faultState != null">
+					AND f.state= #{faultState}
+				</if>
+				<if test="startIndex != null">
+					<if test="pageSize != null">
+						limit #{startIndex},#{pageSize}
+					</if>
+				</if>
+	  		</if>
+	  		<if test="state == 2">
+	  			select 
+				f.id,f.is_add,f.user_id,st.id service_type_id,f.state,
+					f.project_id,f.service_type_id,f.fault_user_name, 
+					f.fault_user_mobile,f.pics,f.maintain_state,f.fault_type,
+					f. LEVEL,f.CODE,st.name AS service_type_name,f.createtime,f.appointment_time,
+					f.introduce,f.pics,f.lng,f.lat,DATE_FORMAT(f.receivetime,'%Y-%m-%d %T') AS receiveTime,
+					f.receivetime,f.position,p.pic AS projectPic,p. NAME AS project_name,
+					CONCAT(p.province,p.city,p.area,p.address) AS projectAddress,
+					p.owner_id,st.maintain_user_name,st.maintain_user_mobile
+				from fault_info f
+				INNER JOIN service_type st ON st.id = f.service_type_id
+				INNER JOIN project p ON p.id = f.project_id
+				LEFT JOIN index_user_fault iuf ON f.id = iuf.fault_info_id
+				WHERE 
+					(f.company_id = #{companyId} or f.fault_user_mobile in (select id from `user` WHERE company_id = #{companyId} )) 
+					AND f.createtime LIKE CONCAT(DATE_FORMAT(SYSDATE(),'%Y-%m'),'%')
+				<if test="faultState != null">
+					AND f.state= #{faultState}
+				</if>
+				<if test="startIndex != null">
+					<if test="pageSize != null">
+						limit #{startIndex},#{pageSize}
+					</if>
+				</if>
+	  		</if>
+	  		<if test="state == 3">
+	  			select 
+				f.id,f.is_add,f.user_id,st.id service_type_id,f.state,
+					f.project_id,f.service_type_id,f.fault_user_name, 
+					f.fault_user_mobile,f.pics,f.maintain_state,f.fault_type,
+					f. LEVEL,f.CODE,st.name AS service_type_name,f.createtime,f.appointment_time,
+					f.introduce,f.pics,f.lng,f.lat,DATE_FORMAT(f.receivetime,'%Y-%m-%d %T') AS receiveTime,
+					f.receivetime,f.position,p.pic AS projectPic,p. NAME AS project_name,
+					CONCAT(p.province,p.city,p.area,p.address) AS projectAddress,
+					p.owner_id,st.maintain_user_name,st.maintain_user_mobile
+				from fault_info f
+				INNER JOIN service_type st ON st.id = f.service_type_id
+				INNER JOIN project p ON p.id = f.project_id
+				LEFT JOIN index_user_fault iuf ON f.id = iuf.fault_info_id
+				WHERE f.company_id = #{companyId} or f.fault_user_mobile in (select id from `user` WHERE company_id = #{companyId})
+				<if test="faultState != null">
+					AND f.state= #{faultState}
+				</if>
+				<if test="startIndex != null">
+					<if test="pageSize != null">
+						limit #{startIndex},#{pageSize}
+					</if>
+				</if>
+	  		</if>
+	  	</when>
+	  	<otherwise>
+	  		<if test="state == 1">
+	  			select
+				f.id,f.is_add,f.user_id,st.id service_type_id,f.state,
+					f.project_id,f.service_type_id,f.fault_user_name, 
+					f.fault_user_mobile,f.pics,f.maintain_state,f.fault_type,
+					f. LEVEL,f.CODE,st.name AS service_type_name,f.createtime,f.appointment_time,
+					f.introduce,f.pics,f.lng,f.lat,DATE_FORMAT(f.receivetime,'%Y-%m-%d %T') AS receiveTime,
+					f.receivetime,f.position,p.pic AS projectPic,p. NAME AS project_name,
+					CONCAT(p.province,p.city,p.area,p.address) AS projectAddress,
+					p.owner_id,st.maintain_user_name,st.maintain_user_mobile
+				from fault_info f
+				INNER JOIN service_type st ON st.id = f.service_type_id
+				INNER JOIN project p ON p.id = f.project_id
+				WHERE f.company_id = #{companyId} AND f.state &lt; 7
+				<if test="faultState != null">
+					AND f.state= #{faultState}
+				</if>
+				<if test="startIndex != null">
+					<if test="pageSize != null">
+						limit #{startIndex},#{pageSize}
+					</if>
+				</if>
+	  		</if>
+	  		<if test="state == 2">
+	  			select 
+				f.id,f.is_add,f.user_id,st.id service_type_id,f.state,
+					f.project_id,f.service_type_id,f.fault_user_name, 
+					f.fault_user_mobile,f.pics,f.maintain_state,f.fault_type,
+					f. LEVEL,f.CODE,st.name AS service_type_name,f.createtime,f.appointment_time,
+					f.introduce,f.pics,f.lng,f.lat,DATE_FORMAT(f.receivetime,'%Y-%m-%d %T') AS receiveTime,
+					f.receivetime,f.position,p.pic AS projectPic,p. NAME AS project_name,
+					CONCAT(p.province,p.city,p.area,p.address) AS projectAddress,
+					p.owner_id,st.maintain_user_name,st.maintain_user_mobile
+				from fault_info f
+				INNER JOIN service_type st ON st.id = f.service_type_id
+				INNER JOIN project p ON p.id = f.project_id
+				WHERE f.company_id = #{companyId} AND f.createtime LIKE CONCAT(DATE_FORMAT(SYSDATE(),'%Y-%m'),'%')
+				<if test="faultState != null">
+					AND f.state= #{faultState}
+				</if>
+				<if test="startIndex != null">
+					<if test="pageSize != null">
+						limit #{startIndex},#{pageSize}
+					</if>
+				</if>
+	  		</if>
+	  		<if test="state == 3">
+	  			select 
+				f.id,f.is_add,f.user_id,st.id service_type_id,f.state,
+					f.project_id,f.service_type_id,f.fault_user_name, 
+					f.fault_user_mobile,f.pics,f.maintain_state,f.fault_type,
+					f. LEVEL,f.CODE,st.name AS service_type_name,f.createtime,f.appointment_time,
+					f.introduce,f.pics,f.lng,f.lat,DATE_FORMAT(f.receivetime,'%Y-%m-%d %T') AS receiveTime,
+					f.receivetime,f.position,p.pic AS projectPic,p. NAME AS project_name,
+					CONCAT(p.province,p.city,p.area,p.address) AS projectAddress,
+					p.owner_id,st.maintain_user_name,st.maintain_user_mobile
+				from fault_info f
+				INNER JOIN service_type st ON st.id = f.service_type_id
+				INNER JOIN project p ON p.id = f.project_id
+				WHERE f.company_id = #{companyId}
+				<if test="faultState != null">
+					AND f.state= #{faultState}
+				</if>
+				<if test="startIndex != null">
+					<if test="pageSize != null">
+						limit #{startIndex},#{pageSize}
+					</if>
+				</if>
+	  		</if>
+	  	</otherwise>
+	  </choose>
+  </select>
+  
+  <!-- 项目所关联的未完成报障 -->
+  <select id="selectFaultListForProject" parameterType="map" resultMap="BaseResultMap">
+    select 
+    <include refid="Rel_Column_List" />
+    from fault_info f LEFT JOIN index_user_fault iuf ON f.id = iuf.fault_info_id
+	LEFT JOIN project_user pu ON iuf.user_id = pu.user_id
+	WHERE 
+	pu.project_id = #{projectId} 
+	AND pu.type = #{type} 
+	AND f.state &lt; 9 
+	<if test="startIndex != null">
+		<if test="pageSize != null">
+			limit #{startIndex},#{pageSize}
+		</if>
+	</if>
+  </select>
+  
+  <!-- 查询附近报障 -->
+  <select id="selectByPosition" parameterType="map" resultType="map">
+		select DISTINCT
+			f.id, f.company_id companyId, f.user_id userId, f.code, f.level, f.fault_user_name faultUserName, f.fault_user_mobile faultUserMobile, 
+		    f.project_id projectId, f.service_type_id serviceTypeId, f.introduce, f.position,f.lng,f.lat, f.createtime, f.receivetime,f.appointment_time appointmentTime,
+		    f.equip_id equipId,f.pics, f.fault_type faultType, f.state, f.is_add isAdd, f.maintain_state maintainState , f.updatetime, f.is_del isDel,st.`name` serviceTypeName
+		FROM index_user_fault iuf INNER JOIN fault_info f ON iuf.fault_info_id = f.id AND iuf.is_del = 0 and f.is_del = 0
+		INNER JOIN service_type st ON f.service_type_id = st.id AND st.is_del = 0
+		WHERE iuf.user_id = #{userId}
+			AND f.lng >= #{lf_down_lng} 
+			AND #{rg_up_lng} >= f.lng 
+			AND f.lat >= #{lf_down_lat}
+			AND #{rg_up_lat} >= f.lat
+  </select>
+  
+  <!-- 报障详情相关信息 -->
+  <select id="selectByFaultCount" parameterType="java.lang.Integer" resultType="map">
+		select res1.operate_count,res2.maintain_count,res3.maintain_history_count,res4.store_count 
+		FROM 
+		(
+			select count(1) operate_count 
+			FROM maintain_operate_log mol INNER JOIN fault_info fi ON mol.fault_info_id = fi.id 
+			WHERE fi.id = #{faultInfoId}
+		) res1,
+		(
+			select count(1) maintain_count 
+			FROM maintain_info mi INNER JOIN fault_info fi ON mi.fault_info_id = fi.id 
+			WHERE fi.id = #{faultInfoId}
+		) res2,
+		(
+			select count(1) maintain_history_count
+			from fault_info fi INNER JOIN service_type st on fi.service_type_id = st.id 
+			WHERE st.id in
+			(select service_type_id from fault_info WHERE id = #{faultInfoId})
+		) res3,
+		(
+			SELECT count(1) store_count FROM fault_store fs INNER JOIN fault_info fi ON fs.fault_info_id = fi.id 
+			WHERE fi.service_type_id = (select st.id from fault_info fi INNER JOIN service_type st on fi.service_type_id = st.id 
+				WHERE fi.id = #{faultInfoId} )
+		) res4
+  </select>
+  
+  <!-- 获取公司最大报障单号 -->
+  <select id="selectMaxCode" parameterType="java.lang.Integer" resultType="java.lang.String">
+    select `code` from fault_info where company_id = #{companyId} ORDER BY `code` DESC LIMIT 0,1
+  </select>
+  
+  <!-- 获取报账单详情 -->
+  <select id="selectFaultInfoById" parameterType="java.lang.Integer" resultMap="ResultMap">
+	SELECT
+		f.id,
+		f.is_add,
+		f.user_id,
+		st.id service_type_id,
+		f.state,
+		f.project_id,
+		f.service_type_id,
+		f.fault_user_name, 
+		f.fault_user_mobile,
+		f.pics,
+		f.maintain_state,
+		f.fault_type,
+		f. LEVEL,
+		f. CODE,
+		st.name AS service_type_name,
+		f.createtime,
+		f.appointment_time,
+		f.introduce,
+		f.pics,
+		f.lng,
+		f.lat,
+		DATE_FORMAT(
+			f.receivetime,
+			'%Y-%m-%d %T'
+		) AS receiveTime,
+		f.receivetime,
+		f.position,
+		p.pic AS projectPic,
+		p. NAME AS project_name,
+		CONCAT(
+			p.province,
+			p.city,
+			p.area,
+			p.address
+		) AS projectAddress,
+		p.owner_id,
+		st.maintain_user_name,
+		st.maintain_user_mobile,
+		u.`name` user_name
+	FROM
+		fault_info f
+	INNER JOIN service_type st ON st.id = f.service_type_id
+	INNER JOIN project p ON p.id = f.project_id
+	INNER JOIN `user` u on f.user_id = u.id
+	WHERE
+	f.id = #{id,jdbcType=INTEGER}
+	LIMIT 0,1
+  </select>
+  
+  <!-- 查询用户是否有未完成报障单 -->
+  <select id="checkUnfinished" parameterType="map" resultType="java.lang.Integer" >
+  	<if test="serviceTypeId != null">
+	  	select count(1) from fault_info f 
+			inner join index_user_fault iuf on f.id = iuf.fault_info_id 
+			and iuf.user_id =#{userId}
+		where f.state &lt; 7
+		<if test="projectId != null" >
+			and f.project_id=#{projectId}
+		</if>
+		<if test="serviceTypeId != null">
+			and f.service_type_id=#{serviceTypeId} 
+		</if>	
+		and f.is_del = 0  		
+  	</if>
+  	<if test="serviceTypeId == null" >
+  		select count(1) from fault_info where  user_id = #{userId} and state &lt; 7
+  		<if test="projectId != null">
+	  		and project_id = #{projectId}
+  		</if>   		 
+  		and is_del = 0
+  	</if>
+  	
+	
+  </select>
+  
+  <!-- 查询维保列表 -->
+  <select id="selectMaintainList" parameterType="map" resultMap="ResultMap">
+	select DISTINCT f.id, f.company_id, f.user_id, f.code, f.level, f.fault_user_name, f.fault_user_mobile, 
+	    f.project_id, f.service_type_id, f.introduce, f.position,f.lng,f.lat, f.createtime, f.receivetime,f.appointment_time, f.equip_id, 
+	    f.pics, f.fault_type, f.state, f.is_add, f.maintain_state, f.updatetime, f.is_del,f.lat,f.lng
+	    ,p.pic project_pic,p.name project_name,st.name service_type_name
+	from fault_info f
+	LEFT JOIN service_type st ON st.id = f.service_type_id and st.is_del = 0
+	LEFT JOIN project p ON p.id = f.project_id and p.is_del = 0
+	LEFT JOIN `user` u ON st.maintain_user_mobile  = u.phone AND u.is_del = 0
+	LEFT JOIN index_user_fault iuf ON f.id = iuf.fault_info_id AND iuf.is_del = 0
+	WHERE 
+	(u.id = #{userId} OR iuf.user_id = #{userId})
+	<if test="state != null">
+        AND f.state = #{state}
+    </if>
+	order by f.id desc
+	limit #{startIndex},#{pageSize}
+  </select>
+  
+  <!-- 获取报障列表 -->
+  <select id="selectFaultList" parameterType="map" resultMap="ResultMap">
+	SELECT DISTINCT
+		f.id, f.company_id, f.user_id, f.code, f.level, f.fault_user_name, f.fault_user_mobile, 
+	    f.project_id, f.service_type_id, f.introduce, f.position,f.lng,f.lat, f.createtime, f.receivetime,f.appointment_time, f.equip_id, 
+	    f.pics, f.fault_type, f.state, f.is_add, f.maintain_state, f.updatetime, f.is_del,f.lat,f.lng
+	    ,p.pic project_pic,p.name project_name,st.name service_type_name
+	FROM
+		fault_info f
+	LEFT JOIN service_type st ON st.id = f.service_type_id and st.is_del = 0
+	LEFT JOIN project p ON p.id = f.project_id and p.is_del = 0
+	LEFT JOIN project_user pu ON pu.project_id = f.project_id and pu.is_del = 0
+	LEFT JOIN `user` u on f.fault_user_mobile = u.phone and u.is_del = 0
+	WHERE
+		(u.id = #{userId} OR (pu.is_leader = 1 AND pu.user_id =#{userId}))
+	<if test="type != null">
+        AND pu.type = #{type}
+    </if>
+	<if test="state != null">
+        AND f.state = #{state}
+    </if>
+	order by f.id desc
+	limit #{startIndex},#{pageSize}
+  </select>
+  
+  <!-- 根据serviceTypeId查询报障单列表 -->
+  <select id="selectListByServiceTypeId" parameterType="map" resultMap="ResultMap">
+	SELECT DISTINCT
+		f.id, f.company_id, f.user_id, f.code, f.level, f.fault_user_name, f.fault_user_mobile, 
+	    f.project_id, f.service_type_id, f.introduce, f.position,f.lng,f.lat, f.createtime, f.receivetime,f.appointment_time, f.equip_id, 
+	    f.pics, f.fault_type, f.state, f.is_add, f.maintain_state, f.updatetime, f.is_del,f.lat,f.lng
+	    ,p.pic project_pic,p.name project_name,st.name service_type_name
+	from fault_info f
+	LEFT JOIN service_type st ON st.id = f.service_type_id and st.is_del = 0
+	LEFT JOIN project p ON p.id = f.project_id and p.is_del = 0
+	WHERE st.id in
+	(select service_type_id from fault_info WHERE id = #{faultInfoId})
+	<if test="state != null">
+        AND f.state = #{state}
+    </if>
+	order by f.state desc
+	<if test="startIndex != null">
+		<if test=" pageSize != null">
+			limit #{startIndex},#{pageSize}
+		</if>
+	</if>
+  </select>
+  
+    <!-- 获取报障列表 (维保超时待接收提醒)-->
+  <select id="selectListByToRecive" parameterType="map" resultType="map">
+	SELECT DISTINCT f.id as faultInfoId,f.`code` as faultCode,f.fault_user_mobile as faultUserMobile,f.fault_user_name as faultUserName,u.id as maintainUserId,
+	s.maintain_user_mobile as maintainUserMobile,s.maintain_user_name as maintainUserName ,c.responser_name as companyUserName,c.responser_phone as campanyUserMobile,
+	c.responser_id as companyUserId
+	FROM fault_info f 
+	LEFT JOIN service_type s on s.id=f.service_type_id and s.is_del=0
+	LEFT JOIN `user` u ON u.phone=s.maintain_user_mobile and u.is_del=0
+	LEFT JOIN company c on c.id=u.company_id and c.is_del=0
+	WHERE f.state=1
+	AND
+    	IF (f.`level` = 0,NOW() > DATE_ADD(f.createtime, INTERVAL 6 HOUR),
+		IF (f.`level` = 1,NOW() > DATE_ADD(f.createtime, INTERVAL 2 HOUR),
+		IF (f.`level` = 2,NOW() > DATE_ADD(f.createtime,INTERVAL 30 MINUTE),"")))
+	order by f.id desc
+  </select>
+  
+  <!-- 获取报障列表 (维保超时待处理，已接收提醒)-->
+  <select id="selectListByRecive" parameterType="map" resultType="map">
+	SELECT DISTINCT f.id as faultInfoId,f.`code` as faultCode,u.phone as engineerMobile,u.`name` as engineerName,
+	s.maintain_user_mobile as maintainUserMobile,s.maintain_user_name as maintainUserName,i.type
+	FROM fault_info f 
+	LEFT JOIN index_user_fault i on f.id=i.fault_info_id and i.is_del=0
+	LEFT JOIN service_type s on s.id=f.service_type_id and s.is_del=0
+	LEFT JOIN `user` u ON u.id=i.user_id and u.is_del=0
+	WHERE f.state=3
+	AND NOW() > DATE_ADD(i.updatetime, INTERVAL 1 HOUR) 
+	order by f.id desc
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from fault_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.FaultInfo">
+    insert into fault_info (id, company_id, user_id, 
+      code, level, fault_user_name, 
+      fault_user_mobile, project_id, service_type_id, 
+      introduce, lng, lat, 
+      position, createtime, receivetime, 
+      appointment_time, equip_id, pics, 
+      fault_type, state, is_add, 
+      maintain_state, updatetime, is_del
+      )
+    values (#{id,jdbcType=INTEGER}, #{companyId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{code,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{faultUserName,jdbcType=VARCHAR}, 
+      #{faultUserMobile,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, #{serviceTypeId,jdbcType=INTEGER}, 
+      #{introduce,jdbcType=VARCHAR}, #{lng,jdbcType=VARCHAR}, #{lat,jdbcType=VARCHAR}, 
+      #{position,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{receivetime,jdbcType=TIMESTAMP}, 
+      #{appointmentTime,jdbcType=TIMESTAMP}, #{equipId,jdbcType=INTEGER}, #{pics,jdbcType=VARCHAR}, 
+      #{faultType,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}, #{isAdd,jdbcType=INTEGER}, 
+      #{maintainState,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{isDel,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.FaultInfo" keyProperty="id" >
+    insert into fault_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="faultUserName != null">
+        fault_user_name,
+      </if>
+      <if test="faultUserMobile != null">
+        fault_user_mobile,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="serviceTypeId != null">
+        service_type_id,
+      </if>
+      <if test="introduce != null">
+        introduce,
+      </if>
+      <if test="lng != null">
+        lng,
+      </if>
+      <if test="lat != null">
+        lat,
+      </if>
+      <if test="position != null">
+        position,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="receivetime != null">
+        receivetime,
+      </if>
+      <if test="appointmentTime != null">
+        appointment_time,
+      </if>
+      <if test="equipId != null">
+        equip_id,
+      </if>
+      <if test="pics != null">
+        pics,
+      </if>
+      <if test="faultType != null">
+        fault_type,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="isAdd != null">
+        is_add,
+      </if>
+      <if test="maintainState != null">
+        maintain_state,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="faultUserName != null">
+        #{faultUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="faultUserMobile != null">
+        #{faultUserMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="serviceTypeId != null">
+        #{serviceTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="introduce != null">
+        #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="lng != null">
+        #{lng,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receivetime != null">
+        #{receivetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appointmentTime != null">
+        #{appointmentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="equipId != null">
+        #{equipId,jdbcType=INTEGER},
+      </if>
+      <if test="pics != null">
+        #{pics,jdbcType=VARCHAR},
+      </if>
+      <if test="faultType != null">
+        #{faultType,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="isAdd != null">
+        #{isAdd,jdbcType=INTEGER},
+      </if>
+      <if test="maintainState != null">
+        #{maintainState,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+    </trim>
+    <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+        SELECT LAST_INSERT_ID() AS id
+    </selectKey>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.FaultInfo">
+    update fault_info
+    <set>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="faultUserName != null">
+        fault_user_name = #{faultUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="faultUserMobile != null">
+        fault_user_mobile = #{faultUserMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="serviceTypeId != null">
+        service_type_id = #{serviceTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="introduce != null">
+        introduce = #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="lng != null">
+        lng = #{lng,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        lat = #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receivetime != null">
+        receivetime = #{receivetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appointmentTime != null">
+        appointment_time = #{appointmentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="equipId != null">
+        equip_id = #{equipId,jdbcType=INTEGER},
+      </if>
+      <if test="pics != null">
+        pics = #{pics,jdbcType=VARCHAR},
+      </if>
+      <if test="faultType != null">
+        fault_type = #{faultType,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="isAdd != null">
+        is_add = #{isAdd,jdbcType=INTEGER},
+      </if>
+      <if test="maintainState != null">
+        maintain_state = #{maintainState,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.FaultInfo">
+    update fault_info
+    set company_id = #{companyId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      code = #{code,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      fault_user_name = #{faultUserName,jdbcType=VARCHAR},
+      fault_user_mobile = #{faultUserMobile,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=INTEGER},
+      service_type_id = #{serviceTypeId,jdbcType=INTEGER},
+      introduce = #{introduce,jdbcType=VARCHAR},
+      lng = #{lng,jdbcType=VARCHAR},
+      lat = #{lat,jdbcType=VARCHAR},
+      position = #{position,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      receivetime = #{receivetime,jdbcType=TIMESTAMP},
+      appointment_time = #{appointmentTime,jdbcType=TIMESTAMP},
+      equip_id = #{equipId,jdbcType=INTEGER},
+      pics = #{pics,jdbcType=VARCHAR},
+      fault_type = #{faultType,jdbcType=INTEGER},
+      state = #{state,jdbcType=INTEGER},
+      is_add = #{isAdd,jdbcType=INTEGER},
+      maintain_state = #{maintainState,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      is_del = #{isDel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

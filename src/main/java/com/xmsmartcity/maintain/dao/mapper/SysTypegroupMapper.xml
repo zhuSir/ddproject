@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.SysTypegroupMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.SysTypegroup">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="typegroup_name" jdbcType="VARCHAR" property="typegroupName" />
+    <result column="typegroup_code" jdbcType="VARCHAR" property="typegroupCode" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, typegroup_name, typegroup_code, create_user_id, createtime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_typegroup
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_typegroup
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.SysTypegroup">
+    insert into sys_typegroup (id, typegroup_name, typegroup_code, 
+      create_user_id, createtime)
+    values (#{id,jdbcType=INTEGER}, #{typegroupName,jdbcType=VARCHAR}, #{typegroupCode,jdbcType=VARCHAR}, 
+      #{createUserId,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.SysTypegroup">
+    insert into sys_typegroup
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="typegroupName != null">
+        typegroup_name,
+      </if>
+      <if test="typegroupCode != null">
+        typegroup_code,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="typegroupName != null">
+        #{typegroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="typegroupCode != null">
+        #{typegroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.SysTypegroup">
+    update sys_typegroup
+    <set>
+      <if test="typegroupName != null">
+        typegroup_name = #{typegroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="typegroupCode != null">
+        typegroup_code = #{typegroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.SysTypegroup">
+    update sys_typegroup
+    set typegroup_name = #{typegroupName,jdbcType=VARCHAR},
+      typegroup_code = #{typegroupCode,jdbcType=VARCHAR},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectByRecord" parameterType="map" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from sys_typegroup
+  	where 1 = 1
+  	<if test="record.id !=null and record.id!=0">
+  		and id=#{record.id,jdbcType=INTEGER}
+  	</if>
+  	<if test="record.typegroupName != null">
+        and typegroup_name like CONCAT('%', #{record.typegroupName,jdbcType=VARCHAR}, '%')
+      </if>
+      <if test="record.typegroupCode != null">
+        and typegroup_code = #{record.typegroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="record.createUserId != null">
+        and create_user_id = #{record.createUserId,jdbcType=INTEGER}
+      </if>
+      <if test="startIndex !=null and pageSize !=null">
+		LIMIT #{startIndex},#{pageSize}
+	</if>
+  </select>
+</mapper>

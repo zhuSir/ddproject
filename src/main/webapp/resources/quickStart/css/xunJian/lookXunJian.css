@@ -1,0 +1,83 @@
+.contentTitle
+{
+    color: #ff8100;
+    font-size: 20px;
+    margin-left: 3%;
+}
+.detailTitle
+  {
+      color: #ff8100;
+      font-size: 19px;
+      margin-left: 3%;
+  }
+.detailTitle2
+{
+    color: #ff8100;
+    font-size: 19px;
+    margin-left: 3%;
+    margin-top: 30px;
+    float: left;
+    width: 100%;
+}
+.textS
+{
+    color:black;
+    font-size: 15px;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+.maginLeft
+{
+    margin-left: 3%;
+}
+.maginright
+{
+    margin-right: 3%;
+}
+.maginTop
+{
+    margin-top: 55px;
+}
+.leftDIV
+{
+     width: 43%;
+    float: left;
+    height: 300px;
+}
+.leftDIV p
+{
+    text-align: center;
+    margin-top: 10px;
+    color: gray;
+}
+.rightDIV p
+{
+    text-align: center;
+    margin-top: 10px;
+    color: gray;
+}
+.rightDIV
+{
+    width: 43%;
+    float: right;
+    height: 300px;
+}
+.imageSize
+{
+    height: 300px;
+    width: 100%;
+}
+.divTop
+{
+    margin-top: 30px;
+     height: auto;
+    float: left;
+}
+.foot
+{
+    height: 20px;
+    background-color: white;
+    margin-top: 50px;
+    float: left;
+    width:100%;
+}

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.FaultSummaryMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.FaultSummary">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="fault_info_id" jdbcType="INTEGER" property="faultInfoId" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+  </resultMap>
+  <select id="selectFaultList"  parameterType="map" resultMap="BaseResultMap">
+  	SELECT p.`name` as projectName,p.id as projectId
+		<if test="type==0">
+		,COUNT(fi.id) as faultSum
+		,SUM(fi.total_price) as paySum
+	</if>
+	<if test="type==1">
+		,COUNT(fi.id) as maintenanSum
+		,SUM(fi.total_price) as incomeSum
+	</if>
+ 	FROM project p
+	LEFT JOIN(  #查询报障单数量和每个报障单的总金额
+	SELECT DISTINCT f.id,w.total_price,f.project_id
+	FROM fault_info f
+	LEFT JOIN (SELECT DISTINCT fault_info_id,SUM(total_price) as total_price FROM work_order) w on w.fault_info_id=f.id
+	LEFT JOIN index_user_fault i on i.fault_info_id=f.id and i.is_del=0
+	<if test="type==0">
+		LEFT JOIN project_user pu on pu.project_id=f.project_id and pu.is_leader=1 and pu.is_del=0 and pu.type=0  #查询项目负责人
+		LEFT JOIN `user` uc on uc.phone=f.fault_user_mobile and uc.is_del=0
+		LEFT JOIN company c on uc.company_id=c.id and c.is_del=0   #查询公司负责人
+		LEFT JOIN `user` u on (u.id=c.responser_id or u.id=pu.user_id or f.fault_user_mobile=u.phone)
+	</if>
+	<if test="type==1">
+		LEFT JOIN project_user pu on pu.project_id=f.project_id AND pu.is_leader=1 and pu.is_del=0 and pu.type=1   #查询项目负责人
+		LEFT JOIN `user` uc on uc.id=i.user_id and uc.is_del=0   
+		LEFT JOIN company c on c.id=uc.company_id and uc.is_del=0   #查询公司负责人
+		LEFT JOIN `user` u ON (i.user_id=u.id or pu.user_id=u.id or c.responser_id=u.id) AND u.is_del = 0 
+	</if>
+	WHERE u.id=#{userId,jdbcType=INTEGER}
+	<if test="createtimeStart!=null and createtimeEnd!=null">
+	  and f.createtime between #{createtimeStart,jdbcType=TIMESTAMP} and #{createtimeEnd,jdbcType=TIMESTAMP}
+	</if>
+	<if test="receivetimeStart!=null and receivetimeEnd!=null">
+	  and f.receivetime between #{receivetimeStart,jdbcType=TIMESTAMP} and #{receivetimeEnd,jdbcType=TIMESTAMP}
+	</if>
+	) fi on fi.project_id=p.id
+  </select>
+  
+  <select id="selectSummaryNum" parameterType="map" resultType="map">
+  	SELECT
+		COUNT(t.id) AS sumNum,
+		CASE WHEN SUM(CASE WHEN t.state IN(1,2,3,4,5,6) THEN 1 ELSE 0 END) is NULL THEN 0 ELSE SUM(CASE WHEN t.state IN(1,2,3,4,5,6) THEN 1 ELSE 0 END) END as processingNum,
+		CASE WHEN SUM(CASE when t.createtime BETWEEN DATE_ADD(curdate(),INTERVAL - DAY (curdate()) + 1 DAY)
+			AND date_add(curdate() - DAY (curdate()) + 1,INTERVAL 1 MONTH) THEN 1 ELSE 0 END) is NULL THEN 0 ELSE SUM(CASE when t.createtime BETWEEN DATE_ADD(curdate(),INTERVAL - DAY (curdate()) + 1 DAY)
+			AND date_add(curdate() - DAY (curdate()) + 1,INTERVAL 1 MONTH) THEN 1 ELSE 0 END) END as currentMonthNum,
+		CASE WHEN SUM(t.total_price) is NULL THEN 0 ELSE SUM(t.total_price) END as currrntMonthIncome,
+		CASE WHEN SUM(CASE WHEN t.createtime BETWEEN DATE_ADD(curdate(),INTERVAL - DAY (curdate()) + 1 DAY)
+			AND date_add(curdate() - DAY (curdate()) + 1,INTERVAL 1 MONTH) THEN t.total_price ELSE 0 END) is NULL THEN 0 ELSE 
+		SUM(CASE WHEN t.createtime BETWEEN DATE_ADD(curdate(),INTERVAL - DAY (curdate()) + 1 DAY)
+			AND date_add(curdate() - DAY (curdate()) + 1,INTERVAL 1 MONTH) THEN t.total_price ELSE 0 END) END as sumIncome
+	FROM
+		(SELECT DISTINCT
+		f.id,f.state, f.createtime,w.total_price
+		FROM fault_info f
+		left join index_user_fault i on i.fault_info_id=f.id
+		LEFT join work_order w ON w.fault_info_id=f.id
+		<!-- 维保方 -->
+		<if test="type ==1">
+			LEFT JOIN project_user pu on pu.project_id=f.project_id AND pu.is_leader=1 and pu.is_del=0 and pu.type=1  #查询项目负责人
+			LEFT JOIN `user` uc on uc.id=i.user_id and uc.is_del=0   
+			LEFT JOIN company c on c.id=uc.company_id and uc.is_del=0   #查询公司负责人
+			LEFT JOIN `user` u ON (i.user_id=u.id or pu.user_id=u.id or c.responser_id=u.id) AND u.is_del = 0 
+		</if>
+		<!-- 报障方 -->
+		<if test="type==2">
+			LEFT JOIN project_user pu on pu.project_id=f.project_id AND pu.is_leader=1 and pu.is_del=0 and pu.type=0 #查询项目负责人
+			LEFT JOIN `user` uc on uc.phone=f.fault_user_mobile and uc.is_del=0
+			LEFT JOIN company c on uc.company_id=c.id and c.is_del=0   #查询公司负责人
+			LEFT JOIN `user` u on (u.id=c.responser_id or u.id=pu.user_id or f.fault_user_mobile=u.phone)
+		</if>
+		where f.is_del=0 and u.id=#{userId,jdbcType=INTEGER}) t
+  </select>
+  
+  
+</mapper>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.FileMapper">
+  <cache/>
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.File">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_code" jdbcType="VARCHAR" property="fileCode" />
+    <result column="file_size" jdbcType="INTEGER" property="fileSize" />
+    <result column="file_type_id" jdbcType="INTEGER" property="fileTypeId" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="equips_id" jdbcType="INTEGER" property="equipsId" />
+    <result column="creattime" jdbcType="TIMESTAMP" property="creattime" />
+    <result column="creat_user_id" jdbcType="INTEGER" property="creatUserId" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, file_path, file_name, file_code, file_size, file_type_id, project_id, equips_id, 
+    creattime, creat_user_id, updatetime, update_user_id, remark
+  </sql>
+  <sql id="Rel_Column_List">
+    f.id, f.file_path, f.file_name, f.file_code,f.file_size, f.file_type_id, f.project_id, f.equips_id, f.creattime, f.creat_user_id, f.updatetime, 
+    f.update_user_id, f.remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from file
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from file
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.File">
+    insert into file (id, file_path, file_name, 
+      file_code, file_size, file_type_id, 
+      project_id, equips_id, creattime, 
+      creat_user_id, updatetime, update_user_id, 
+      remark)
+    values (#{id,jdbcType=INTEGER}, #{filePath,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
+      #{fileCode,jdbcType=VARCHAR}, #{fileSize,jdbcType=INTEGER}, #{fileTypeId,jdbcType=INTEGER}, 
+      #{projectId,jdbcType=INTEGER}, #{equipsId,jdbcType=INTEGER}, #{creattime,jdbcType=TIMESTAMP}, 
+      #{creatUserId,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.File">
+    insert into file
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="filePath != null">
+        file_path,
+      </if>
+      <if test="fileName != null">
+        file_name,
+      </if>
+      <if test="fileCode != null">
+        file_code,
+      </if>
+      <if test="fileSize != null">
+        file_size,
+      </if>
+      <if test="fileTypeId != null">
+        file_type_id,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="equipsId != null">
+        equips_id,
+      </if>
+      <if test="creattime != null">
+        creattime,
+      </if>
+      <if test="creatUserId != null">
+        creat_user_id,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="filePath != null">
+        #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileCode != null">
+        #{fileCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null">
+        #{fileSize,jdbcType=INTEGER},
+      </if>
+      <if test="fileTypeId != null">
+        #{fileTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="equipsId != null">
+        #{equipsId,jdbcType=INTEGER},
+      </if>
+      <if test="creattime != null">
+        #{creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creatUserId != null">
+        #{creatUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.File">
+    update file
+    <set>
+      <if test="filePath != null">
+        file_path = #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileCode != null">
+        file_code = #{fileCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fileSize != null">
+        file_size = #{fileSize,jdbcType=INTEGER},
+      </if>
+      <if test="fileTypeId != null">
+        file_type_id = #{fileTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="equipsId != null">
+        equips_id = #{equipsId,jdbcType=INTEGER},
+      </if>
+      <if test="creattime != null">
+        creattime = #{creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creatUserId != null">
+        creat_user_id = #{creatUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.File">
+    update file
+    set file_path = #{filePath,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      file_code = #{fileCode,jdbcType=VARCHAR},
+      file_size = #{fileSize,jdbcType=INTEGER},
+      file_type_id = #{fileTypeId,jdbcType=INTEGER},
+      project_id = #{projectId,jdbcType=INTEGER},
+      equips_id = #{equipsId,jdbcType=INTEGER},
+      creattime = #{creattime,jdbcType=TIMESTAMP},
+      creat_user_id = #{creatUserId,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+   <select id="selectByRecord" parameterType="map" resultMap="BaseResultMap">  
+    select DISTINCT
+    <include refid="Rel_Column_List"></include>
+    FROM file f 
+	LEFT JOIN equips e on e.id=f.equips_id and e.is_del=0
+	LEFT JOIN service_type s on s.id=e.service_type_id and s.is_del=0
+	LEFT JOIN project_user pu on (pu.project_id=f.project_id OR s.project_id=pu.project_id) and pu.is_del=0
+	LEFT JOIN `user` uc on uc.id=pu.user_id and uc.is_del=0
+	LEFT JOIN company c on c.id=uc.company_id and c.is_del=0
+	LEFT JOIN `user` u on u.id=pu.user_id or u.id=c.responser_id
+	WHERE u.id=#{userId,jdbcType=INTEGER}
+    <if test="file.equipsId !=null and file.equipsId !=''">
+      and f.equips_id=#{file.equipsId,jdbcType=INTEGER}
+    </if>
+    <if test="file.projectId !=null and file.projectId !=''">
+      and f.project_id=#{file.projectId,jdbcType=INTEGER}
+    </if>
+    <if test="file.fileName !=null and file.fileName !=''">
+      and f.file_name like concat('%',#{file.fileName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="file.fileTypeId !=null and file.fileTypeId !=''">
+      and f.file_type_id=#{file.fileTypeId,jdbcType=INTEGER}
+    </if>
+  	<if test="startIndex !=null and pageSize !=null">
+  		LIMIT #{startIndex},#{pageSize}
+  	</if>
+  </select>
+  
+</mapper>

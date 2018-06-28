@@ -1,0 +1,114 @@
+.ovfHiden{overflow: hidden;height: 100%;}
+body{
+	background: #F1F1F1;
+}
+body p,span ,button,a{
+	font-size: 16px;
+	font-family: "微软雅黑";
+	margin-top: 0px;
+}
+a{
+	text-decoration: none;
+}
+.main{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+.main img{
+	width: 201px;
+	height: 101px;
+	margin-top: 153px;
+	margin-left: 22%;
+	float: left;
+}
+.main .join{
+	width: 100%;
+	height: auto;
+	float: left;
+	margin-top: 30px;
+}
+.join button{
+	outline: none;
+	border: none;
+	width: 40%;
+	height: 45px;
+	border-radius: 4px;
+	float: left;
+}
+.join button a{
+	color: white;
+	text-decoration: none;
+}
+.join .bt1{
+	background: #FFAD1D;
+	margin-left: 8%;
+}
+.join .bt2{
+	background: #FF8100;
+	margin-left: 15px;
+}
+.main .xx {
+	float: left;
+	width: 100%;
+	height: auto;
+	margin-top: 15px;
+}
+.xx .pt{
+	text-align: center;
+	color: #999999;
+	font-size: 14px;
+}
+.xx .pt a{
+	color: #FF8100;
+}
+.wrap{
+	width: 100%;
+	height: 100%;
+	background: black;
+	opacity: 0.5;
+	z-index: 1111;
+	position: fixed;
+	left: 0;
+	top: 0;
+	display: none;
+}
+.invited{
+	width: 65%;
+	height: 25%;
+	background: white;
+	border-radius: 12px;
+	position: fixed;
+	top: 30%;
+	left: 18%;
+	z-index: 9999;
+	display: none;
+}
+.invited .sh{
+	height: 58%;
+	width: 100%;
+	border-bottom: 1px solid #E5E5E5;
+}
+.invited .sh p{
+	margin-top: 6%;
+	text-align: center;
+	font-size: 15px;
+	color: #000000;
+	margin-left: 10%;
+	margin-right: 9%;
+	line-height: 25px;
+}
+.invited .xia{
+	float: left;
+	height: 20%;
+	width: 100%;
+}
+.invited .xia p{
+	text-align: center;
+	font-size: 16px;
+	font-weight: bold;
+	color: #FF8100;
+	margin-top: 6%;
+}

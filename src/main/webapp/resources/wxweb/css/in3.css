@@ -1,0 +1,133 @@
+.ovfHiden{overflow: hidden;height: 100%;}
+a{
+	text-decoration: none;
+	color: #FF8100;
+}
+.main{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.main p{
+	font-size: 17px;
+}
+.main .pt{
+	text-align: center;
+	font-size: 26px;
+	margin-top: 30px;
+	color: #FF8100;
+}
+.main .dx{
+	width: auto;
+	height: auto;
+	margin-left:12% ;
+	margin-right:9% ;
+	margin-top: -6px;
+}
+.main .dx p{
+	color: #666666;
+	line-height: 25px;
+}
+.main .dx .p2{
+	margin-top: -8px;
+}
+.main .dx .st1{
+	color: #ff8100;
+}
+.main .dx .pf{
+	margin-top: 33px;
+}
+.main .dx .s1{
+	color: #000000;
+	font-size: 15px;
+}
+.main .dx .pf .s2{
+	color: #ff8100;
+	font-size: 17px;
+}
+.main .dx img{
+	width: 39%;
+	height: 39%;
+	margin-left: 28%;
+}
+.main .foot{
+	width: 100%;
+	height: auto;
+	margin-top: 30px;
+}
+.main .foot p{
+	text-align: center;	
+}
+.main .foot .pb span{
+	color: #999999;
+	font-size: 15px;
+	float: left;
+	margin-left: 27%;
+}
+.main .foot .pb img{
+	margin-left: 9px;
+	width: 18px;
+	height: 18px;
+	float: left;
+	margin-top: 1px;
+}
+.wrap{
+	width: 100%;
+	height: 100%;
+	background: black;
+	opacity: 0.5;
+	z-index: 1111;
+	position: fixed;
+	left: 0;
+	top: 0;
+	display: none;
+}
+.invited{
+	width: 70%;
+	height: 140px;
+	background: white;
+	border-radius: 8px;
+	position: fixed;
+	top: 30%;
+	left: 17%;
+	z-index: 9999;
+	display: none;
+}
+.invited .sh{
+	height: 65%;
+	width: 100%;
+	border-bottom: 1px solid #E5E5E5;
+	float: left;
+}
+.invited .sh p{
+	margin-top: 8%;
+	text-align: center;
+	font-size: 14px;
+	color: #000000;
+	margin-left: 10%;
+	margin-right: 9%;
+	line-height: 19px;
+	text-align: justify;
+}
+.invited .xia{
+	float: left;
+	height: 34%;
+	width: 100%;
+}
+.invited .xia p{
+	text-align: center;
+	font-size: 16px;
+	font-weight: bold;
+	color: #FF8100;
+	line-height: 18px;
+}
+@media screen and (max-width: 320px) {
+	.main .dx p{
+		line-height: 20px;
+	}
+	.main .dx .pf{
+		margin-top: 0px;
+	}
+}

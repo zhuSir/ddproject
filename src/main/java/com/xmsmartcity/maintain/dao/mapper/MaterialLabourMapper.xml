@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.MaterialLabourMapper">
+	<resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.MaterialLabour">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="fault_info_id" jdbcType="INTEGER" property="faultInfoId" />
+		<result column="type" jdbcType="TINYINT" property="type" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="sum" jdbcType="INTEGER" property="sum" />
+		<result column="unit" jdbcType="VARCHAR" property="unit" />
+		<result column="price" jdbcType="DECIMAL" property="price" />
+		<result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, fault_info_id, type, name, sum, unit, price, updatetime
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from material_labour
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 根据报障单ID查询 -->
+	<select id="selectListByFaultInfoId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from material_labour
+		where fault_info_id = #{faultInfoId,jdbcType=INTEGER}
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from material_labour
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	
+	<!-- 根据报障单ID删除费用清单 -->
+	<delete id="deleteByFaultInfo" parameterType="java.lang.Integer">
+		delete from material_labour
+		where fault_info_id = #{faultInfoId,jdbcType=INTEGER}
+	</delete>
+	
+	<!-- 批量保存 -->
+	<insert id="insertBatch" parameterType="java.util.List"	useGeneratedKeys="true" keyProperty="id">
+		insert into material_labour (fault_info_id, type,name, sum, unit, price)
+		values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.faultInfoId},#{item.type},#{item.name,jdbcType=VARCHAR},#{item.sum},#{item.unit,jdbcType=VARCHAR},#{item.price})
+		</foreach>
+	</insert>
+
+	<insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.MaterialLabour">
+		insert into material_labour (id, fault_info_id, type,
+		name, sum, unit, price,
+		updatetime)
+		values (#{id,jdbcType=INTEGER}, #{faultInfoId,jdbcType=INTEGER},
+		#{type,jdbcType=TINYINT},
+		#{name,jdbcType=VARCHAR}, #{sum,jdbcType=INTEGER}, #{unit,jdbcType=VARCHAR},
+		#{price,jdbcType=DECIMAL},
+		#{updatetime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.MaterialLabour">
+		insert into material_labour
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="faultInfoId != null">
+				fault_info_id,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="sum != null">
+				sum,
+			</if>
+			<if test="unit != null">
+				unit,
+			</if>
+			<if test="price != null">
+				price,
+			</if>
+			<if test="updatetime != null">
+				updatetime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="faultInfoId != null">
+				#{faultInfoId,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=TINYINT},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="sum != null">
+				#{sum,jdbcType=INTEGER},
+			</if>
+			<if test="unit != null">
+				#{unit,jdbcType=VARCHAR},
+			</if>
+			<if test="price != null">
+				#{price,jdbcType=DECIMAL},
+			</if>
+			<if test="updatetime != null">
+				#{updatetime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.MaterialLabour">
+		update material_labour
+		<set>
+			<if test="faultInfoId != null">
+				fault_info_id = #{faultInfoId,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=TINYINT},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="sum != null">
+				sum = #{sum,jdbcType=INTEGER},
+			</if>
+			<if test="unit != null">
+				unit = #{unit,jdbcType=VARCHAR},
+			</if>
+			<if test="price != null">
+				price = #{price,jdbcType=DECIMAL},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.MaterialLabour">
+		update material_labour
+		set fault_info_id = #{faultInfoId,jdbcType=INTEGER},
+		type = #{type,jdbcType=TINYINT},
+		name = #{name,jdbcType=VARCHAR},
+		sum = #{sum,jdbcType=INTEGER},
+		unit = #{unit,jdbcType=VARCHAR},
+		price = #{price,jdbcType=DECIMAL},
+		updatetime = #{updatetime,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

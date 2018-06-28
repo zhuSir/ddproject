@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.ServiceTypeMapper">
+	<resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.ServiceType">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="maintain_user_name" jdbcType="VARCHAR"
+			property="maintainUserName" />
+		<result column="maintain_user_mobile" jdbcType="VARCHAR"
+			property="maintainUserMobile" />
+		<result column="state" jdbcType="INTEGER" property="state" />
+		<result column="project_id" jdbcType="INTEGER" property="projectId" />
+		<result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+		<result column="is_del" jdbcType="INTEGER" property="isDel" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, maintain_user_name, maintain_user_mobile,
+		state, project_id, updatetime,
+		is_del
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from service_type
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 根据服务内容负责人获取服务内容 -->
+	<select id="selecyByMaintainUserPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from service_type
+		where maintain_user_mobile = #{phone,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectByProjectId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from service_type
+		where is_del = 0
+		and project_id = #{projectId}
+	</select>
+	
+	<!-- select by project_id and type -->
+	<select id="selectListByParams" parameterType="map" resultMap="BaseResultMap">
+		SELECT
+			DISTINCT
+			st.id, st.name, st.maintain_user_name, st.maintain_user_mobile,
+			st.state, st.project_id, st.updatetime,
+			st.is_del
+		from project_user pu INNER JOIN service_type st ON pu.service_type_id = st.id 
+			and pu.is_del = 0 and st.is_del = 0
+		where 
+		pu.project_id = #{projectId} 
+		AND pu.type = #{type}
+		<if test="userId != null">
+			AND	pu.user_id = #{userId}
+		</if>
+	</select>
+	
+	<select id="selectByParams" parameterType="map" resultMap="BaseResultMap">
+		SELECT
+			st.id, st.name, st.maintain_user_name, st.maintain_user_mobile,
+			st.state, st.project_id, st.updatetime,
+			st.is_del
+		from project_user pu INNER JOIN service_type st ON pu.service_type_id = st.id 
+			and pu.is_del = 0 and st.is_del = 0
+		where 
+		pu.project_id = #{projectId} 
+		<if test="userId != null">
+			AND	pu.user_id = #{userId}
+		</if>
+		<if test="serviceTypeId != null">
+			AND	pu.service_type_id = #{serviceTypeId}
+		</if>
+		<if test="type != null">
+			AND	pu.type = #{type}
+		</if>
+	</select>
+	
+	<select id="selectByCompanyPrincipal" parameterType="map" resultMap="BaseResultMap">
+		SELECT
+			DISTINCT
+			st.id, st.name, st.maintain_user_name, st.maintain_user_mobile,
+			st.state, st.project_id, st.updatetime,
+			st.is_del
+		from project_user pu INNER JOIN service_type st ON pu.service_type_id = st.id 
+			and pu.is_del = 0 and st.is_del = 0
+		where 
+		pu.project_id = #{projectId} 
+		AND pu.type = #{type}
+		AND	pu.user_id IN (select id from `user` WHERE company_id = #{companyId})
+	</select>
+	
+	<!-- 获取用户未加入的服务内容 -->
+	<select id="selectListByUnEqUser" parameterType="map" resultMap="BaseResultMap">
+		SELECT
+			st.id, st.name, st.maintain_user_name, st.maintain_user_mobile,
+			st.state, st.project_id, st.updatetime,st.is_del
+		from service_type st LEFT JOIN project_user pu ON st.id = pu.service_type_id
+			AND st.is_del = 0 AND pu.is_del = 0
+		where 
+		pu.type = 1
+		AND pu.project_id = #{projectId} 
+		AND	st.id NOT IN(SELECT service_type_id FROM project_user WHERE is_del = 0 and user_id = #{userId})
+		AND st.maintain_user_mobile IN (SELECT phone FROM `user` WHERE company_id = #{companyId})
+		GROUP BY st.id
+	</select>
+	
+	<!-- 根据项目id和userId获取服务内容 -->
+	<select id="selectByProjectIdAndUserId" parameterType="map" resultMap="BaseResultMap">
+		SELECT
+			DISTINCT
+			st.id, st.name, st.maintain_user_name, st.maintain_user_mobile,
+			st.state, st.project_id, st.updatetime,
+			st.is_del
+		FROM project_user pu 
+		INNER JOIN service_type st ON st.project_id = pu.project_id and pu.is_del = 0 and st.is_del = 0
+		WHERE pu.user_id = #{userId} 
+		AND pu.project_id = #{projectId}
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		service_type
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<!-- 批量保存 -->
+	<insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+		insert into service_type (name, maintain_user_name,
+		maintain_user_mobile, project_id)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.name},#{item.maintainUserName},#{item.maintainUserMobile},#{item.projectId})
+		</foreach>
+	</insert>
+
+	<insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.ServiceType">
+		insert into service_type (id,
+		name, maintain_user_name,
+		maintain_user_mobile,
+		state, project_id, updatetime,
+		is_del)
+		values
+		(#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+		#{maintainUserName,jdbcType=VARCHAR},
+		#{maintainUserMobile,jdbcType=VARCHAR},
+		#{state,jdbcType=INTEGER},
+		#{projectId,jdbcType=INTEGER},
+		#{updatetime,jdbcType=TIMESTAMP},
+		#{isDel,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.ServiceType"
+		keyProperty="id">
+		insert into service_type
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="maintainUserName != null">
+				maintain_user_name,
+			</if>
+			<if test="maintainUserMobile != null">
+				maintain_user_mobile,
+			</if>
+			<if test="state != null">
+				state,
+			</if>
+			<if test="projectId != null">
+				project_id,
+			</if>
+			<if test="updatetime != null">
+				updatetime,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="maintainUserName != null">
+				#{maintainUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="maintainUserMobile != null">
+				#{maintainUserMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				#{state,jdbcType=INTEGER},
+			</if>
+			<if test="projectId != null">
+				#{projectId,jdbcType=INTEGER},
+			</if>
+			<if test="updatetime != null">
+				#{updatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isDel != null">
+				#{isDel,jdbcType=INTEGER},
+			</if>
+		</trim>
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.ServiceType">
+		update service_type
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="maintainUserName != null">
+				maintain_user_name =
+				#{maintainUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="maintainUserMobile != null">
+				maintain_user_mobile =
+				#{maintainUserMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null">
+				state = #{state,jdbcType=INTEGER},
+			</if>
+			<if test="projectId != null">
+				project_id = #{projectId,jdbcType=INTEGER},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.ServiceType">
+		update
+		service_type
+		set name = #{name,jdbcType=VARCHAR},
+		maintain_user_name =
+		#{maintainUserName,jdbcType=VARCHAR},
+		maintain_user_mobile =
+		#{maintainUserMobile,jdbcType=VARCHAR},
+		state = #{state,jdbcType=INTEGER},
+		project_id = #{projectId,jdbcType=INTEGER},
+		updatetime =
+		#{updatetime,jdbcType=TIMESTAMP},
+		is_del = #{isDel,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	
+	<select id="getSericeById" parameterType="java.lang.Integer" resultType="map">
+		SELECT
+			st.id as serviceTypeId, st.name as serviceName, st.maintain_user_name, st.maintain_user_mobile,
+			st.state, st.project_id as projectId, st.updatetime,
+			st.is_del,p.name as projectName,p.owner_name as faultUserName,p.owner_phone as faultUserMobile
+		from service_type st 
+			left join project p ON p.id = st.project_id
+		where 
+			st.id=#{id,jdbcType=INTEGER}
+	</select>
+</mapper>

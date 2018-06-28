@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.UserMapper">
+	<resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.User">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="phone" jdbcType="VARCHAR" property="phone" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="password" jdbcType="VARCHAR" property="password" />
+		<result column="head_pic" jdbcType="VARCHAR" property="headPic" />
+		<result column="company_id" jdbcType="INTEGER" property="companyId" />
+		<result column="mail" jdbcType="VARCHAR" property="mail" />
+		<result column="sex" jdbcType="INTEGER" property="sex" />
+		<result column="contact_info" jdbcType="VARCHAR" property="contactInfo" />
+		<result column="open_id" jdbcType="VARCHAR" property="openId" />
+		<result column="last_logintime" jdbcType="TIMESTAMP" property="lastLogintime" />
+		<result column="login_times" jdbcType="INTEGER" property="loginTimes" />
+		<result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
+		<result column="state" jdbcType="INTEGER" property="state" />
+		<result column="register_flatform" jdbcType="INTEGER" property="registerFlatform" />
+		<result column="title" jdbcType="VARCHAR" property="title" />
+		<result column="join_time" jdbcType="TIMESTAMP" property="joinTime" />
+		<result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+		<result column="is_del" jdbcType="INTEGER" property="isDel" />
+		<result column="token" jdbcType="VARCHAR" property="token" />
+		<result column="role" jdbcType="SMALLINT" property="role" />
+		<result column="xcx_open_id" jdbcType="VARCHAR" property="xcxOpenId" />
+		<result column="unionid" jdbcType="VARCHAR" property="unionid" />
+	</resultMap>
+	<resultMap extends="BaseResultMap" id="ResultMapWithBLOBs"
+		type="com.xmsmartcity.maintain.pojo.User">
+		<result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, phone, name, password, head_pic, company_id, mail, sex,
+		contact_info,
+		open_id,
+		last_logintime, login_times, register_time,
+		state, register_flatform, title,
+		join_time,
+		updatetime, is_del, token,
+		role,xcx_open_id,unionid
+	</sql>
+	<sql id="Blob_Column_List">
+		remark
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from user
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectCount" resultType="java.lang.Integer">
+		select count(1) from user
+	</select>
+
+	<select id="selectByPhone" parameterType="java.lang.String"
+		resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from user
+		where
+		is_del = 0
+		and phone = #{phone}
+	</select>
+
+	<select id="selectByOpenId" parameterType="java.lang.String"
+		resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from user
+		where
+		is_del = 0
+		and open_id = #{openId}
+	</select>
+	
+	<select id="selectByUnionId" parameterType="java.lang.String"
+		resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from user
+		where
+		is_del = 0
+		and unionid = #{unionid}
+	</select>
+
+	<select id="selectByXcxOpenId" parameterType="java.lang.String"
+		resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from user
+		where
+		is_del = 0
+		and xcx_open_id = #{xcxOpenId}
+	</select>
+	
+	<select id="selectByPhoneAndPsw" parameterType="map"
+		resultMap="ResultMapWithBLOBs">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from user
+		where
+		is_del = 0
+		and phone = #{phone}
+		and password= #{psw}
+	</select>
+
+	<select id="selectUserOpenIdsByIds" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		select open_id from user
+		where is_del = 0
+		and open_id != ''
+		and id in
+		<foreach item="id" index="index" collection="list" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+
+	<select id="selectByUserIdAndMail" parameterType="map"
+		resultType="int">
+		select
+		count(*)
+		from user
+		where
+		is_del = 0
+		and id != #{userId}
+		and mail = #{mail}
+	</select>
+
+	<!-- 根据团队id查询成员 -->
+	<select id="selectUsersByCompanyId" parameterType="map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from user
+		where company_id != 0 AND company_id = #{companyId}
+		<if test="startIndex != null">
+			<if test="pageSize != null">
+				limit #{startIndex},#{pageSize}
+			</if>
+		</if>
+	</select>
+
+	<!-- 根据字段查询 -->
+	<select id="selectUsersByParams" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from user
+		<where>
+			<if test="companyId != null">
+				company_id = #{companyId}
+			</if>
+			<if test="userId != null">
+				and user_id = #{userId}
+			</if>
+			<if test="startIndex != null">
+				<if test="pageSize != null">
+					limit #{startIndex},#{pageSize}
+				</if>
+			</if>
+		</where>
+	</select>
+
+	<!-- 查询项目下用户 排除负责人 -->
+	<select id="selectListByParames" parameterType="map" resultMap="BaseResultMap"  >
+		select
+		u.id, u.phone, u.name, u.password, u.head_pic, u.company_id,
+		u.mail, u.sex, u.contact_info,
+		u.open_id,
+		u.last_logintime,
+		u.login_times, u.register_time, u.state, u.register_flatform, u.title,
+		u.join_time,u.updatetime, u.is_del, u.token, u.role,remark
+		FROM
+		project_user pu INNER JOIN `user` u ON pu.user_id = u.id
+		where
+		pu.is_del = 0 and u.is_del =0 
+		<!-- and pu.is_leader = 0 -->
+		<if test="projectId != null">
+			AND pu.project_id =#{projectId}
+		</if>
+		<if test="userId != null">
+			and pu.user_id = #{userId}
+		</if>
+		<if test="type != null">
+			AND pu.type = #{type}
+		</if>
+		<if test="serviceTypeId != null">
+			and pu.service_type_id = #{serviceTypeId}
+		</if>
+		<if test="startIndex != null">
+			<if test="pageSize != null">
+				limit #{startIndex},#{pageSize}
+			</if>
+		</if>
+	</select>
+
+	<!-- 查询团队成员过滤掉项目成员 -->
+	<select id="selectCompamyMemberFileterProject" parameterType="java.lang.Integer"
+			resultMap="ResultMapWithBLOBs" >
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from user
+		WHERE company_id = #{companyId}
+		AND id NOT in(select u.id
+		from `user` u INNER JOIN project_user pu on u.id = pu.user_id
+		AND pu.is_del = 0 AND u.is_del = 0
+		INNER JOIN project p ON p.id = pu.project_id
+		WHERE p.company_id = #{companyId} AND p.id = #{projectId})
+		<if test="startIndex != null">
+			<if test="pageSize != null">
+				limit #{startIndex},#{pageSize}
+			</if>
+		</if>
+	</select>
+	
+	<!-- 查询团队成员过滤掉项目负责人 -->
+	<select id="selectCompamyMemberFileterProjectLeader" parameterType="java.lang.Integer"
+		resultMap="ResultMapWithBLOBs" >
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from user
+		WHERE company_id = #{companyId}
+		AND id NOT in(select u.id
+		from `user` u INNER JOIN project_user pu on u.id = pu.user_id
+		AND pu.is_del = 0 AND u.is_del = 0
+		WHERE pu.project_id = #{projectId} AND pu.is_leader = 1
+		<if test="serviceTypeId != null">
+			AND pu.service_type_id = #{serviceTypeId}
+		</if>
+		)
+		<if test="startIndex != null">
+			<if test="pageSize != null">
+				limit #{startIndex},#{pageSize}
+			</if>
+		</if>
+	</select>
+
+	<!-- 查询报障维修工程师 -->
+	<select id="selectMaintainUsers" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap" >
+		select
+		DISTINCT
+		u.id, u.phone, u.name, u.password, u.head_pic,
+		u.company_id, u.mail, u.sex, u.contact_info,
+		u.open_id,
+		u.last_logintime, u.login_times, u.register_time, u.state,
+		u.register_flatform, u.title,
+		u.join_time,u.updatetime, u.is_del,
+		u.token, u.role,u.remark
+		FROM index_user_fault uf INNER JOIN `user` u
+		ON uf.user_id = u.id
+		WHERE
+		uf.is_del = 0
+		AND u.is_del = 0
+		AND uf.fault_info_id = #{faultInfoId}
+	</select>
+
+	<select id="selectUsersByCidAndUid" parameterType="map"
+		resultMap="BaseResultMap" >
+		select
+		u.id, u.phone, u.name, u.password, u.head_pic, u.company_id,
+		u.mail, u.sex, u.contact_info,
+		u.open_id,
+		u.last_logintime,
+		u.login_times, u.register_time, u.state, u.register_flatform, u.title,
+		u.join_time,u.updatetime, u.is_del, u.token, u.role,remark
+		from user u
+		INNER JOIN company c ON u.company_id = c.id
+		where
+		u.id != c.responser_id
+		<if test="companyId != null">
+			and u.company_id = #{companyId}
+		</if>
+		<if test="startIndex != null">
+			<if test="pageSize != null">
+				limit #{startIndex},#{pageSize}
+			</if>
+		</if>
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from user
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.User">
+		insert into user (id, phone,
+		name,
+		password, head_pic, company_id,
+		mail, sex, contact_info,
+		open_id,
+		last_logintime, login_times,
+		register_time, state, register_flatform,
+		title, join_time, updatetime,
+		is_del, token, role,
+		remark,xcx_open_id,unionid)
+		values
+		(#{id,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR},
+		#{name,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR},
+		#{headPic,jdbcType=VARCHAR}, #{companyId,jdbcType=INTEGER},
+		#{mail,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER},
+		#{contactInfo,jdbcType=VARCHAR},
+		#{openId,jdbcType=VARCHAR},
+		#{lastLogintime,jdbcType=TIMESTAMP}, #{loginTimes,jdbcType=INTEGER},
+		#{registerTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER},
+		#{registerFlatform,jdbcType=INTEGER},
+		#{title,jdbcType=VARCHAR},
+		#{joinTime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP},
+		#{isDel,jdbcType=INTEGER}, #{token,jdbcType=VARCHAR},
+		#{role,jdbcType=SMALLINT},
+		#{remark,jdbcType=LONGVARCHAR},
+		#{xcxOpenId,jdbcType=VARCHAR})
+		#{unionid,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.User"
+		keyProperty="id">
+		insert into user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="phone != null">
+				phone,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="headPic != null">
+				head_pic,
+			</if>
+			<if test="companyId != null">
+				company_id,
+			</if>
+			<if test="mail != null">
+				mail,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="contactInfo != null">
+				contact_info,
+			</if>
+			<if test="openId != null">
+				open_id,
+			</if>
+			<if test="lastLogintime != null">
+				last_logintime,
+			</if>
+			<if test="loginTimes != null">
+				login_times,
+			</if>
+			<if test="registerTime != null">
+				register_time,
+			</if>
+			<if test="state != null">
+				state,
+			</if>
+			<if test="registerFlatform != null">
+				register_flatform,
+			</if>
+			<if test="title != null">
+				title,
+			</if>
+			<if test="joinTime != null">
+				join_time,
+			</if>
+			<if test="updatetime != null">
+				updatetime,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+			<if test="token != null">
+				token,
+			</if>
+			<if test="role != null">
+				role,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="xcxOpenId != null">
+				xcx_open_id,
+			</if>
+			<if test="unionid != null">
+				unionid,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="headPic != null">
+				#{headPic,jdbcType=VARCHAR},
+			</if>
+			<if test="companyId != null">
+				#{companyId,jdbcType=INTEGER},
+			</if>
+			<if test="mail != null">
+				#{mail,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=INTEGER},
+			</if>
+			<if test="contactInfo != null">
+				#{contactInfo,jdbcType=VARCHAR},
+			</if>
+			<if test="openId != null">
+				#{openId,jdbcType=VARCHAR},
+			</if>
+			<if test="lastLogintime != null">
+				#{lastLogintime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="loginTimes != null">
+				#{loginTimes,jdbcType=INTEGER},
+			</if>
+			<if test="registerTime != null">
+				#{registerTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="state != null">
+				#{state,jdbcType=INTEGER},
+			</if>
+			<if test="registerFlatform != null">
+				#{registerFlatform,jdbcType=INTEGER},
+			</if>
+			<if test="title != null">
+				#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="joinTime != null">
+				#{joinTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updatetime != null">
+				#{updatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isDel != null">
+				#{isDel,jdbcType=INTEGER},
+			</if>
+			<if test="token != null">
+				#{token,jdbcType=VARCHAR},
+			</if>
+			<if test="role != null">
+				#{role,jdbcType=SMALLINT},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="xcxOpenId != null">
+				#{xcxOpenId,jdbcType=VARCHAR},
+			</if>
+			<if test="unionid != null">
+				#{unionid,jdbcType=VARCHAR},
+			</if>
+		</trim>
+		<selectKey resultType="Integer" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.User">
+		update user
+		<set>
+			<if test="phone != null">
+				phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="headPic != null">
+				head_pic = #{headPic,jdbcType=VARCHAR},
+			</if>
+			<if test="companyId != null">
+				company_id = #{companyId,jdbcType=INTEGER},
+			</if>
+			<if test="mail != null">
+				mail = #{mail,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				sex = #{sex,jdbcType=INTEGER},
+			</if>
+			<if test="contactInfo != null">
+				contact_info = #{contactInfo,jdbcType=VARCHAR},
+			</if>
+			<if test="openId != null">
+				open_id = #{openId,jdbcType=VARCHAR},
+			</if>
+			<if test="lastLogintime != null">
+				last_logintime = #{lastLogintime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="loginTimes != null">
+				login_times = #{loginTimes,jdbcType=INTEGER},
+			</if>
+			<if test="registerTime != null">
+				register_time = #{registerTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="state != null">
+				state = #{state,jdbcType=INTEGER},
+			</if>
+			<if test="registerFlatform != null">
+				register_flatform = #{registerFlatform,jdbcType=INTEGER},
+			</if>
+			<if test="title != null">
+				title = #{title,jdbcType=VARCHAR},
+			</if>
+			<if test="joinTime != null">
+				join_time = #{joinTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=INTEGER},
+			</if>
+			<if test="token != null">
+				token = #{token,jdbcType=VARCHAR},
+			</if>
+			<if test="role != null">
+				role = #{role,jdbcType=SMALLINT},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=LONGVARCHAR},
+			</if>
+			<if test="xcxOpenId != null">
+				xcx_open_id = #{xcxOpenId,jdbcType=VARCHAR},
+			</if>
+			<if test="unionid != null">
+				unionid = #{unionid,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xmsmartcity.maintain.pojo.User">
+		update
+		user
+		set phone = #{phone,jdbcType=VARCHAR},
+		name =
+		#{name,jdbcType=VARCHAR},
+		password = #{password,jdbcType=VARCHAR},
+		head_pic = #{headPic,jdbcType=VARCHAR},
+		company_id =
+		#{companyId,jdbcType=INTEGER},
+		mail = #{mail,jdbcType=VARCHAR},
+		sex =
+		#{sex,jdbcType=INTEGER},
+		contact_info =
+		#{contactInfo,jdbcType=VARCHAR},
+		open_id = #{openId,jdbcType=VARCHAR},
+		last_logintime = #{lastLogintime,jdbcType=TIMESTAMP},
+		login_times =
+		#{loginTimes,jdbcType=INTEGER},
+		register_time =
+		#{registerTime,jdbcType=TIMESTAMP},
+		state = #{state,jdbcType=INTEGER},
+		register_flatform = #{registerFlatform,jdbcType=INTEGER},
+		title =
+		#{title,jdbcType=VARCHAR},
+		join_time = #{joinTime,jdbcType=TIMESTAMP},
+		updatetime = #{updatetime,jdbcType=TIMESTAMP},
+		is_del =
+		#{isDel,jdbcType=INTEGER},
+		token = #{token,jdbcType=VARCHAR},
+		role =
+		#{role,jdbcType=SMALLINT},
+		remark = #{remark,jdbcType=LONGVARCHAR},
+		xcx_open_id = #{xcxOpenId,jdbcType=VARCHAR},
+		unionid = #{unionid,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.User">
+		update user
+		set
+		phone = #{phone,jdbcType=VARCHAR},
+		name = #{name,jdbcType=VARCHAR},
+		password = #{password,jdbcType=VARCHAR},
+		head_pic =
+		#{headPic,jdbcType=VARCHAR},
+		company_id =
+		#{companyId,jdbcType=INTEGER},
+		mail = #{mail,jdbcType=VARCHAR},
+		sex =
+		#{sex,jdbcType=INTEGER},
+		contact_info =
+		#{contactInfo,jdbcType=VARCHAR},
+		open_id = #{openId,jdbcType=VARCHAR},
+		last_logintime = #{lastLogintime,jdbcType=TIMESTAMP},
+		login_times =
+		#{loginTimes,jdbcType=INTEGER},
+		register_time =
+		#{registerTime,jdbcType=TIMESTAMP},
+		state = #{state,jdbcType=INTEGER},
+		register_flatform = #{registerFlatform,jdbcType=INTEGER},
+		title =
+		#{title,jdbcType=VARCHAR},
+		join_time = #{joinTime,jdbcType=TIMESTAMP},
+		updatetime = #{updatetime,jdbcType=TIMESTAMP},
+		is_del =
+		#{isDel,jdbcType=INTEGER},
+		token = #{token,jdbcType=VARCHAR},
+		role =
+		#{role,jdbcType=SMALLINT},
+		xcx_open_id = #{xcxOpenId,jdbcType=VARCHAR},
+		unionid = #{unionid,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	
+	<select id="queryForCompanyUserPage" parameterType="map" resultMap="ResultMapWithBLOBs">
+		select u.*,c.name as companyName from user u
+		left join company c on c.id=u.company_id
+		where c.is_del=0 and u.is_del=0
+		<if test="user.name != null">
+		and	u.name like concat('%',#{user.name,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="user.phone != null">
+		and	u.phone like concat('%',#{user.phone,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="user.companyId != null">
+		and	u.company_id = #{user.companyId,jdbcType=INTEGER}
+		</if>
+		<if test="user.companyName != null">
+		and c.name like concat('%',#{user.companyName,jdbcType=VARCHAR},'%')
+		</if>
+		 order by c.responser_id=u.id desc, u.id desc
+		 <if test="startIndex !=null and pageSize !=null">
+      		limit #{startIndex},#{pageSize}
+      	</if>
+	</select>
+	<!-- 获取人员动态 -->
+	<select id="selectUserDynamic" parameterType="java.lang.Integer" resultType="map"  >
+		SELECT
+		res.*
+		FROM
+		(SELECT fi.id,p.`name` project_name,fi.position,u.id user_id,u.head_pic,
+					u.`name` user_name,fi.createtime time,fi.introduce content,fi.state,fi.appointment_time
+		from fault_info fi
+		INNER JOIN index_user_fault iuf ON iuf.fault_info_id = fi.id and iuf.is_del = 0
+		INNER JOIN `user` u ON iuf.user_id = u.id AND u.is_del = 0
+		INNER JOIN project p ON fi.project_id = p.id AND p.is_del = 0
+		INNER JOIN company c ON u.company_id = c.id AND c.is_del = 0
+		AND c.id = #{id} 
+		AND fi.state &lt; 9
+		UNION
+			SELECT fi.id,p.`name` project_name,fi.position,u.id user_id,u.head_pic,
+					u.`name` user_name,fi.createtime time,fi.introduce content,fi.state,fi.appointment_time
+			from fault_info fi
+			INNER JOIN service_type st ON st.id = fi.service_type_id
+			INNER JOIN project p ON fi.project_id = p.id
+			AND p.is_del = 0
+			AND st.maintain_user_mobile IN (SELECT phone FROM `user` WHERE company_id = #{id})
+			INNER JOIN `user` u ON st.maintain_user_mobile = u.phone AND u.is_del = 0 
+			AND fi.id NOT IN (select fault_info_id from index_user_fault WHERE fault_info_id = fi.id)
+		UNION
+		SELECT 0 id,'' project_name,s.location position,u.id user_id,u.head_pic,u.`name` user_name,s.checkin_time time,s.content,0 state,null appointment_time
+		from sign_in s 
+		INNER JOIN `user` u ON u.id = s.user_id 
+		INNER JOIN company c ON u.company_id = c.id
+		WHERE 
+		s.checkin_time Between curdate() 
+		AND DATE_ADD(curdate(),INTERVAL 1 MONTH)
+		AND c.id = #{id}
+		) res
+		ORDER BY res.user_id ASC,res.state desc
+		<if test="startIndex != null">
+			<if test="pageSize != null">
+				limit #{startIndex},#{pageSize}
+			</if>
+		</if>
+	</select>
+	
+	<!-- 查询公司成员 -->
+	<select id="selectCompanyMember" parameterType="map" resultMap="BaseResultMap">
+		select 
+			<include refid="Base_Column_List" />
+			,
+			<include refid="Blob_Column_List" />
+		from user
+		where phone like concat('%',#{searchPhone},'%')
+		and company_id = #{companyId}
+ 	</select>
+	
+	<!-- 查询公司成员 -->
+	<select id="selectPageCompanyMember" parameterType="map" resultMap="ResultMapWithBLOBs">
+		select 
+			<include refid="Base_Column_List" />
+			,
+			<include refid="Blob_Column_List" />
+		from user
+		where company_id = #{companyId}
+ 	</select>
+ 	
+ 	<!-- web 页面个人中心 -->
+ 	<select id="selectUserInfo" parameterType="map" resultType="map" >
+ 		SELECT 
+			uu.id,uu.phone, uu.name, uu.head_pic, uu.company_id, uu.mail, uu.sex,
+			uu.contact_info,uu.last_logintime, uu.login_times, uu.register_time,uu.remark,
+			uu.state, uu.register_flatform, uu.title,uu.join_time,uu.updatetime,
+			uu.role,c.`name` company_name,
+		(select COUNT(DISTINCT pu.project_id) from project_user pu INNER JOIN `user` u ON pu.user_id = u.id WHERE u.id = uu.id) project_num,
+		(select COUNT( DISTINCT fi.id) FROM fault_info fi INNER JOIN index_user_fault iuf ON fi.id = iuf.fault_info_id WHERE iuf.user_id = uu.id) fault_num,
+		(
+		select 
+			SUM(e.maintain_quality)/COUNT(DISTINCT fi.id)
+			from evaluate e 
+			INNER JOIN fault_info fi ON e.fault_info_id = fi.id 
+			INNER JOIN index_user_fault iuf ON iuf.fault_info_id = fi.id 
+			where iuf.user_id = uu.id
+		) evaluate_num,
+		(
+		select 
+			SUM(e.res_speed)/COUNT(DISTINCT fi.id) 
+			from evaluate e 
+			INNER JOIN fault_info fi ON e.fault_info_id = fi.id 
+			INNER JOIN index_user_fault iuf ON iuf.fault_info_id = fi.id 
+			where iuf.user_id = uu.id
+		)speed_num
+		FROM `user` uu
+		INNER JOIN company c ON uu.company_id = c.id
+		WHERE uu.id = #{userId}
+ 	</select>
+ 	
+ 	<!-- 根据token查询user信息 -->
+ 	<select id="selectUserBySystemToken" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs" >
+ 		select
+		u.id, u.phone, u.name,u.head_pic, u.company_id, u.mail, u.sex,
+		u.contact_info,
+		u.open_id,
+		u.last_logintime, u.login_times, u.register_time,
+		u.state, u.register_flatform, u.title,
+		u.join_time,
+		u.updatetime, u.is_del, u.token,
+		u.role,u.xcx_open_id,u.unionid
+		from user u INNER JOIN user_token ut ON u.id = ut.user_id 
+		WHERE ut.sys_token = #{token}
+ 	</select>
+
+	<!-- 查询项目成员 -->
+	<select id="selectSearchProjectMember" parameterType="map" resultMap="ResultMapWithBLOBs">
+		SELECT
+		u.id, u.phone, u.name,u.head_pic, u.company_id, u.mail, u.sex,
+		u.contact_info,
+		u.open_id,
+		u.last_logintime, u.login_times, u.register_time,
+		u.state, u.register_flatform, u.title,
+		u.join_time,
+		u.updatetime, u.is_del, u.token,
+		u.role,u.xcx_open_id,u.unionid
+		FROM USER u INNER JOIN project_user pu
+		ON u.id = pu.user_id
+		WHERE pu.project_id = #{projectId}
+		AND u.phone LIKE concat("%",#{searchPhone},'%')
+	</select>
+	
+</mapper>

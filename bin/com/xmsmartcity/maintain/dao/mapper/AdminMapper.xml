@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.AdminMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.Admin">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="head_pic" jdbcType="VARCHAR" property="headPic" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, account, password, phone, name, state, head_pic, remark, role_id, updatetime, 
+    is_del
+  </sql>
+  <sql id="Rel_Column_List">
+    a.id, a.account, a.phone, a.name, a.state, a.head_pic, a.remark, a.role_id, a.updatetime, 
+    a.is_del
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from admin
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from admin
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.Admin">
+    insert into admin (id, account, password, 
+      phone, name, state, 
+      head_pic, remark, role_id, 
+      updatetime, is_del)
+    values (#{id,jdbcType=INTEGER}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, 
+      #{headPic,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{roleId,jdbcType=INTEGER}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{isDel,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.Admin">
+    insert into admin
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="account != null">
+        account,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="headPic != null">
+        head_pic,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="headPic != null">
+        #{headPic,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.Admin">
+    update admin
+    <set>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="headPic != null">
+        head_pic = #{headPic,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.Admin">
+    update admin
+    set account = #{account,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      head_pic = #{headPic,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      is_del = #{isDel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectByRecord" parameterType="com.xmsmartcity.maintain.pojo.Admin" resultMap="BaseResultMap">
+    select 
+    <include refid="Rel_Column_List" />
+    from admin a
+    where a.is_del=0
+    <if test="id !=null or id !=''">
+    and a.id = #{id,jdbcType=INTEGER}
+    </if>
+    <if test="account !=null or account !=''">
+    and a.account =#{account,jdbcType=VARCHAR}
+    </if>
+    <if test="password !=null or password!=''">
+    and a.password = #{password,jdbcType=VARCHAR}
+    </if>
+    <if test="state!=null or state!=''">
+    and a.state = #{state,jdbcType=INTEGER}
+    </if>
+    <if test="roleId!=null or roleId!=''">
+    and a.role_id = #{roleId,jdbcType=INTEGER}
+    </if>
+    <if test="name!=null or name!=''">
+    and a.name like concat('%',#{name,jdbcType=VARCHAR},'%') 
+    </if>
+  </select>
+  
+  <!-- 分页查询管理员数据 -->
+  <select id="queryForAdminPage" parameterType="map" resultMap="BaseResultMap">
+  select
+  <include refid="Rel_Column_List" />
+   from admin a
+    where a.is_del=0
+    <if test="record.account !=null or record.account !=''">
+    and a.account like concat('%',#{record.account,jdbcType=VARCHAR},'%') 
+    </if>
+     <if test="record.state!=null or record.state!=''">
+    and a.state = #{record.state,jdbcType=INTEGER}
+    </if>
+    order by a.id desc
+    LIMIT #{startIndex},#{pageSize}
+  </select>
+  
+  <select id="selectNoDelByKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from admin
+    where id = #{id,jdbcType=INTEGER} and is_del=0
+  </select>
+</mapper>

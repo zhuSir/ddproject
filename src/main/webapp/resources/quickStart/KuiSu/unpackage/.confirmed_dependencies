@@ -1,0 +1,63 @@
+{
+	"index.html": {
+		"resources": [
+			"css/kuss.css",
+			"js/jquery.min.js",
+			"baoxiu.html",
+			"img/2-weixiufang.png",
+			"img/1-baoxiufang.png",
+			"weixiu.html",
+			"img/icon-baoxiu.png",
+			"img/icon-weibao.png"
+		],
+		"refer": [
+			"baoxiu.html",
+			"weixiu.html"
+		]
+	},
+	"baoxiu.html": {
+		"resources": [
+			"img/baoxiu/baoxiu.png",
+			"js/jquery.min.js",
+			"img/baoxiu/1-project.png",
+			"img/baoxiu/icon-top.png",
+			"img/baoxiu/1-rectangle-4.png",
+			"img/baoxiu/1-rectangle-1.png",
+			"img/baoxiu/1-people.png",
+			"img/baoxiu/1-many-people.png",
+			"img/baoxiu/1-process.png",
+			"css/baoxiu.css",
+			"js/pbulic.js",
+			"img/baoxiu/1-round.png",
+			"img/baoxiu/1-rectangle-3.png",
+			"img/baoxiu/1-company.png",
+			"img/baoxiu/1-rectangle-5.png",
+			"img/baoxiu/1-download.png",
+			"img/baoxiu/1-rectangle-2.png",
+			"img/1-baoxiufang.png"
+		]
+	},
+	"weixiu.html": {
+		"resources": [
+			"css/weixiu.css",
+			"img/weixiu/use-by-himself.png",
+			"img/weixiu/weixiu.png",
+			"img/weixiu/2-many-people.png",
+			"img/weixiu/2-weixiufang.png",
+			"js/jquery.min.js",
+			"img/baoxiu/icon-top.png",
+			"img/baoxiu/1-project.png",
+			"img/baoxiu/1-rectangle-4.png",
+			"img/baoxiu/1-rectangle-1.png",
+			"img/baoxiu/1-people.png",
+			"img/baoxiu/1-process.png",
+			"js/pbulic.js",
+			"img/baoxiu/1-round.png",
+			"img/baoxiu/1-rectangle-3.png",
+			"img/baoxiu/1-company.png",
+			"img/baoxiu/1-rectangle-5.png",
+			"img/baoxiu/1-download.png",
+			"img/baoxiu/1-rectangle-2.png"
+		]
+	}
+}

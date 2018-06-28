@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.IndexUserFaultMapper">
+	<resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.IndexUserFault">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="fault_info_id" jdbcType="INTEGER" property="faultInfoId" />
+		<result column="is_del" jdbcType="INTEGER" property="isDel" />
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+		<result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+		<result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+		<result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, user_id, fault_info_id, is_del, type, createtime, create_user_id,
+		updatetime,
+		update_user_id, remark
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from index_user_fault
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	
+	<!-- select maintain count  -->
+	<select id="selectMaintainCount" parameterType="java.lang.Integer"	resultType="java.lang.Integer">
+		SELECT count(1) FROM index_user_fault 
+		WHERE user_id = #{userId,jdbcType=INTEGER}
+	</select>
+
+	<select id="selectByParams" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from index_user_fault
+		<where>
+			<if test="userId != null">
+				user_id = #{userId}
+			</if>
+			<if test="faultInfoId != null">
+				and fault_info_id = #{faultInfoId}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+			<if test="type != null">
+				and type = #{type}
+			</if>
+		</where>
+		limit 0,1
+	</select>
+
+	<!-- 根据type排序获取object -->
+	<select id="selectLastObj" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from index_user_fault
+		where
+		fault_info_id = #{faultInfoId}
+		order by type desc
+		limit 0,1
+	</select>
+
+	<select id="selectListByUserId" parameterType="map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from index_user_fault
+		where
+		user_id = #{userId}
+		<if test="startIndex != null">
+			<if test="pageSize != null">
+				limit #{startIndex},#{pageSize}
+			</if>
+		</if>
+	</select>
+
+	<select id="selectListByParams" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from index_user_fault
+		<where>
+			<if test="faultInfoId != null">
+				fault_info_id = #{faultInfoId}
+			</if>
+			<if test="isDel != null">
+				and is_del = #{isDel}
+			</if>
+			<if test="type != null">
+				and type = #{type}
+			</if>
+		</where>
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from index_user_fault
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.IndexUserFault">
+		insert into index_user_fault (id, user_id, fault_info_id,
+		is_del, type, createtime,
+		create_user_id, updatetime, update_user_id,
+		remark)
+		values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+		#{faultInfoId,jdbcType=INTEGER},
+		#{isDel,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP},
+		#{createUserId,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP},
+		#{updateUserId,jdbcType=INTEGER},
+		#{remark,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.IndexUserFault">
+		insert into index_user_fault
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="faultInfoId != null">
+				fault_info_id,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+			<if test="type != null">
+				type,
+			</if>
+			<if test="createtime != null">
+				createtime,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="updatetime != null">
+				updatetime,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=INTEGER},
+			</if>
+			<if test="faultInfoId != null">
+				#{faultInfoId,jdbcType=INTEGER},
+			</if>
+			<if test="isDel != null">
+				#{isDel,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				#{type,jdbcType=INTEGER},
+			</if>
+			<if test="createtime != null">
+				#{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId,jdbcType=INTEGER},
+			</if>
+			<if test="updatetime != null">
+				#{updatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.IndexUserFault">
+		update index_user_fault
+		<set>
+			<if test="userId != null">
+				user_id = #{userId,jdbcType=INTEGER},
+			</if>
+			<if test="faultInfoId != null">
+				fault_info_id = #{faultInfoId,jdbcType=INTEGER},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=INTEGER},
+			</if>
+			<if test="type != null">
+				type = #{type,jdbcType=INTEGER},
+			</if>
+			<if test="createtime != null">
+				createtime = #{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				create_user_id = #{createUserId,jdbcType=INTEGER},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.IndexUserFault">
+		update index_user_fault
+		set user_id = #{userId,jdbcType=INTEGER},
+		fault_info_id = #{faultInfoId,jdbcType=INTEGER},
+		is_del = #{isDel,jdbcType=INTEGER},
+		type = #{type,jdbcType=INTEGER},
+		createtime = #{createtime,jdbcType=TIMESTAMP},
+		create_user_id = #{createUserId,jdbcType=INTEGER},
+		updatetime = #{updatetime,jdbcType=TIMESTAMP},
+		update_user_id = #{updateUserId,jdbcType=INTEGER},
+		remark = #{remark,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

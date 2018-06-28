@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.AbnormalRecordsMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.AbnormalRecords">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="refer_id" jdbcType="INTEGER" property="referId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="fault_state" jdbcType="INTEGER" property="faultState" />
+    <result column="over_time" jdbcType="INTEGER" property="overTime" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, refer_id, type, fault_state, over_time, createtime, create_user_id, updatetime, 
+    update_user_id, remark, is_del
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from abnormal_records
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from abnormal_records
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.AbnormalRecords">
+    insert into abnormal_records (id, refer_id, type, 
+      fault_state, over_time, createtime, 
+      create_user_id, updatetime, update_user_id, 
+      remark, is_del)
+    values (#{id,jdbcType=INTEGER}, #{referId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
+      #{faultState,jdbcType=INTEGER}, #{overTime,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{createUserId,jdbcType=INTEGER}, #{updatetime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR}, #{isDel,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.AbnormalRecords">
+    insert into abnormal_records
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="referId != null">
+        refer_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="faultState != null">
+        fault_state,
+      </if>
+      <if test="overTime != null">
+        over_time,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="referId != null">
+        #{referId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="faultState != null">
+        #{faultState,jdbcType=INTEGER},
+      </if>
+      <if test="overTime != null">
+        #{overTime,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.AbnormalRecords">
+    update abnormal_records
+    <set>
+      <if test="referId != null">
+        refer_id = #{referId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="faultState != null">
+        fault_state = #{faultState,jdbcType=INTEGER},
+      </if>
+      <if test="overTime != null">
+        over_time = #{overTime,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.AbnormalRecords">
+    update abnormal_records
+    set refer_id = #{referId,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      fault_state = #{faultState,jdbcType=INTEGER},
+      over_time = #{overTime,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+    
+  <select id="getAbnormalRecords" parameterType="map" resultType="map">
+ SELECT DISTINCT a.id, a.refer_id as referId, a.type,a.over_time as overTime,a.fault_state as state,su.name as userName,su.phone as userPhone,su.head_pic as headPic,s.name as serviceName,p.name as projectName,
+  f.id as faultId,(e.res_speed + e.maintain_quality)/ 2 AS avgScore
+  from abnormal_records a
+	LEFT JOIN fault_info f on f.id=a.refer_id and f.is_del=0     #f.id=e.fault_info_id 对应a.type=1:评分异常   f.id=a.refer_id对应维维保超时 a.type=0
+	LEFT JOIN evaluate e on e.fault_info_id=f.id and e.is_del=0
+	LEFT JOIN index_user_fault i on i.fault_info_id=f.id AND i.is_del=0
+	LEFT JOIN project p on p.id=f.project_id and p.is_del=0
+	LEFT JOIN service_type s on s.id=f.service_type_id AND s.is_del=0
+	LEFT JOIN `user` su on su.phone=s.maintain_user_mobile and su.is_del=0
+	LEFT JOIN company c on c.id=su.company_id and c.is_del=0
+	LEFT JOIN `user` u ON (i.user_id=u.id or c.responser_id=u.id or s.maintain_user_mobile=u.phone) AND u.is_del = 0
+WHERE u.id=#{userId,jdbcType=INTEGER} and a.is_del=0 and (a.type=1 or a.type=0)
+order by a.createtime 
+limit #{startIndex},#{pageSize}
+  </select>
+  
+  <select id="selectByRecord" parameterType="map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from abnormal_records
+    where refer_id = #{referId,jdbcType=INTEGER} and create_user_id=#{userId,jdbcType=INTEGER} and type=1
+  </select>
+</mapper>

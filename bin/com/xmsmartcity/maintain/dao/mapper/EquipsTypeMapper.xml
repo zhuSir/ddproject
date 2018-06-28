@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.EquipsTypeMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.EquipsType">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="equips_type_name" jdbcType="VARCHAR" property="equipsTypeName" />
+    <result column="equips_type_code" jdbcType="VARCHAR" property="equipsTypeCode" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, equips_type_name, equips_type_code, create_user_id, createtime, update_user_id, 
+    updatetime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from equips_type
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from equips_type
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.EquipsType">
+    insert into equips_type (id, equips_type_name, equips_type_code, 
+      create_user_id, createtime, update_user_id, 
+      updatetime)
+    values (#{id,jdbcType=INTEGER}, #{equipsTypeName,jdbcType=VARCHAR}, #{equipsTypeCode,jdbcType=VARCHAR}, 
+      #{createUserId,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, 
+      #{updatetime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.EquipsType">
+    insert into equips_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="equipsTypeName != null">
+        equips_type_name,
+      </if>
+      <if test="equipsTypeCode != null">
+        equips_type_code,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="updateUserId != null">
+        update_user_id,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="equipsTypeName != null">
+        #{equipsTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="equipsTypeCode != null">
+        #{equipsTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.EquipsType">
+    update equips_type
+    <set>
+      <if test="equipsTypeName != null">
+        equips_type_name = #{equipsTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="equipsTypeCode != null">
+        equips_type_code = #{equipsTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUserId != null">
+        update_user_id = #{updateUserId,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.EquipsType">
+    update equips_type
+    set equips_type_name = #{equipsTypeName,jdbcType=VARCHAR},
+      equips_type_code = #{equipsTypeCode,jdbcType=VARCHAR},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      update_user_id = #{updateUserId,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectEquipsTypeList" parameterType="map" resultMap="BaseResultMap">
+  select
+  id, equips_type_name, equips_type_code
+  from equips_type
+  where 1=1
+  <if test="name != null and name !=''">
+     and equips_type_name like concat('%', #{name},'%')
+  </if>
+  <if test="startIndex !=null and pageSize !=null">
+  LIMIT #{startIndex},#{pageSize}
+  </if>
+  </select>
+</mapper>

@@ -1,0 +1,44 @@
+
+.headImage{
+        width: 100%;
+    height:182px;
+}
+.content{
+    margin-top: -5px;
+
+}
+.content .p1 a{
+    color: #ff8100;
+}
+.content .p1{
+    font-size: 15px;
+    margin-top: 21px;
+    color: #999999;
+    margin-left: 15px;
+    margin-right: 15px;
+    line-height: 20px;
+}
+header button span{
+     color: #222222;
+ }
+.mui-bar .mui-btn-nav.mui-pull-left {
+    margin-left: 0px;
+}
+.content ul .mui-table-view-cell
+{
+    height: 60px;
+}
+.content ul .mui-table-view-cell a{
+    white-space: normal;
+    overflow: auto;
+    margin-top: -2px;
+}
+.mui-table-view-cell a p{
+    font-size: 17px;
+    color: #222222;
+
+
+}
+.mui-title{
+    font-weight: bold;
+}

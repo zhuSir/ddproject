@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.ProjectMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.Project">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="maintain_contract" jdbcType="DATE" property="maintainContract" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+    <result column="create_resource" jdbcType="INTEGER" property="createResource" />
+    <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
+    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
+    <result column="owner_phone" jdbcType="VARCHAR" property="ownerPhone" />
+    <result column="item_type" jdbcType="INTEGER" property="itemType" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="pic" jdbcType="VARCHAR" property="pic" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="lng" jdbcType="VARCHAR" property="lng" />
+    <result column="lat" jdbcType="VARCHAR" property="lat" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="company_id" jdbcType="INTEGER" property="companyId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xmsmartcity.maintain.pojo.Project">
+    <result column="introduce" jdbcType="LONGVARCHAR" property="introduce" />
+  </resultMap>
+  
+  <resultMap extends="BaseResultMap" id="ResultMapWithPu" type="com.xmsmartcity.maintain.pojo.Project">
+    <result column="introduce" jdbcType="LONGVARCHAR" property="introduce" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="is_leader" jdbcType="INTEGER" property="is_leader" />
+    <result column="service_type_id" jdbcType="INTEGER" property="serviceTypeId" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, name, maintain_contract, createtime, create_user_id, create_resource, owner_id, 
+    owner_name, owner_phone, item_type, state, pic, province, city, area, address, lng, 
+    lat, updatetime, is_del,company_id
+  </sql>
+  <sql id="Blob_Column_List">
+    introduce
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from project
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectCount" resultType="java.lang.Integer">
+    select count(1) from project
+  </select>
+  
+  <!-- 获取我的项目 -->
+  <select id="selectProjectList" parameterType="map" resultMap="ResultMapWithPu" >
+  	select DISTINCT
+  	p.id,p.name, p.maintain_contract, p.createtime, p.create_user_id,p.owner_id, 
+    p.owner_name, p.owner_phone, p.item_type, p.state, p.pic, p.province, p.city, p.area, p.address, p.lng, 
+    p.lat,p.introduce,pu.type,p.company_id
+    from project_user pu INNER JOIN project p on pu.project_id = p.id and pu.is_del = 0 and p.is_del = 0
+	where pu.user_id = #{userId}
+	GROUP BY p.id
+	LIMIT #{startIndex},#{pageSize}
+  </select>
+  
+  
+  <!-- 获取项目维保概览 -->
+  <select id="selectCollect" parameterType="java.lang.Integer" resultType="java.util.HashMap" >
+  	SELECT
+	r1.month_count,r2.sum_count
+	FROM
+	(
+	select COUNT(1) month_count 
+	from fault_info fi 
+	WHERE fi.project_id=#{projectId} AND  fi.createtime LIKE CONCAT(DATE_FORMAT(SYSDATE(),'%Y-%m-%d'),'%') 
+	)r1,
+	(
+	select COUNT(1) sum_count
+	from fault_info fi
+	WHERE fi.project_id =#{projectId}
+	)r2
+  </select>
+  
+  <!-- 获取坐标内项目 -->
+  <select id="selectProjectListByPosition" parameterType="map"  resultMap="ResultMapWithPu" >
+	select 
+	  	p.id,p.name, p.maintain_contract, p.createtime, p.create_user_id,p.owner_id, 
+	    p.owner_name, p.owner_phone, p.item_type, p.state, p.pic, p.province, p.city, p.area, p.address, p.lng, 
+	    p.lat,p.introduce, pu.type,pu.is_leader,p.company_id
+	    from project_user pu LEFT JOIN project p on pu.project_id = p.id 
+	where 
+		pu.user_id = #{userId}
+		AND p.lng >= #{lf_down_lng} 
+		AND #{rg_up_lng} >= p.lng 
+		AND p.lat >= #{lf_down_lat}
+		AND #{rg_up_lat} >= p.lat 
+  </select>
+  
+  <!-- 首页获取附近项目 -->
+  <select id="selectByPosition" parameterType="map"  resultMap="ResultMapWithPu" >
+	select DISTINCT
+	  	p.id,p.name, p.maintain_contract, p.createtime, p.create_user_id,p.owner_id, 
+	    p.owner_name, p.owner_phone, p.item_type, p.state, p.pic, p.province, p.city, p.area, p.address, p.lng, 
+	    p.lat,p.introduce, pu.type,pu.is_leader,p.company_id
+	    from project_user pu INNER JOIN project p on pu.project_id = p.id AND pu.is_del = 0 AND p.is_del = 0 AND pu.type = 1
+	where 
+		pu.user_id = #{userId}
+		AND p.lng >= #{lf_down_lng} 
+		AND #{rg_up_lng} >= p.lng 
+		AND p.lat >= #{lf_down_lat}
+		AND #{rg_up_lat} >= p.lat
+  </select>
+  
+  <!-- 获取公司关联的项目 -->
+  <select id="selectCompanyProject" parameterType="map"  resultMap="ResultMapWithPu" >
+    select DISTINCT
+		p.id,p.name, p.maintain_contract, p.createtime, p.create_user_id,p.owner_id, 
+	    p.owner_name, p.owner_phone, p.item_type, p.state, p.pic, p.province, p.city, p.area, p.address, p.lng, 
+	    p.lat,p.introduce, pu.type,pu.is_leader,p.company_id
+	from project_user pu LEFT JOIN project p ON pu.project_id = p.id and pu.is_del = 0 and p.is_del = 0
+	WHERE 
+		pu.is_leader = 1 
+		AND pu.user_id in 
+			(select u.id from company c LEFT JOIN `user` u ON c.id = u.company_id where c.id = #{companyId})
+		AND p.id NOT IN(select project_id from project_user WHERE user_id = #{userId})
+		<if test="projectName != null">
+			AND p.`name` LIKE concat( #{projectName},'%')
+		</if>
+		GROUP BY p.id
+		ORDER BY p.company_id
+    	limit #{startIndex},#{pageSize}
+  </select>
+  
+  <select id="selectByName" parameterType="map"  resultMap="ResultMapWithBLOBs" >
+  	select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from project
+    where name like concat( #{projectName},'%')
+    and company_id = #{companyId}
+    limit #{startIndex},#{pageSize}
+  </select>
+  <!-- 获取公司所属项目 -->
+  <select id="selectListByCompanyId" parameterType="map"  resultMap="ResultMapWithBLOBs" >
+  	select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from project
+    where 
+    company_id = #{companyId}
+    <if test="startIndex != null">
+    	<if test="pageSize != null">
+		    limit #{startIndex},#{pageSize}
+    	</if>
+    </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from project
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.Project">
+    insert into project (id, name, maintain_contract, 
+      createtime, create_user_id, create_resource, 
+      owner_id, owner_name, owner_phone, 
+      item_type, state, pic, 
+      province, city, area, 
+      address, lng, lat, 
+      updatetime, is_del, introduce,company_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{maintainContract,jdbcType=DATE}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{createUserId,jdbcType=INTEGER}, #{createResource,jdbcType=INTEGER}, 
+      #{ownerId,jdbcType=INTEGER}, #{ownerName,jdbcType=VARCHAR}, #{ownerPhone,jdbcType=VARCHAR}, 
+      #{itemType,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}, #{pic,jdbcType=VARCHAR}, 
+      #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{lng,jdbcType=VARCHAR}, #{lat,jdbcType=VARCHAR}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{isDel,jdbcType=INTEGER}, #{introduce,jdbcType=LONGVARCHAR},#{companyId,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.Project" keyProperty="id">
+    insert into project
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="maintainContract != null">
+        maintain_contract,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="createUserId != null">
+        create_user_id,
+      </if>
+      <if test="createResource != null">
+        create_resource,
+      </if>
+      <if test="ownerId != null">
+        owner_id,
+      </if>
+      <if test="ownerName != null">
+        owner_name,
+      </if>
+      <if test="ownerPhone != null">
+        owner_phone,
+      </if>
+      <if test="itemType != null">
+        item_type,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="pic != null">
+        pic,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="lng != null">
+        lng,
+      </if>
+      <if test="lat != null">
+        lat,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="introduce != null">
+        introduce,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="maintainContract != null">
+        #{maintainContract,jdbcType=DATE},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createResource != null">
+        #{createResource,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null">
+        #{ownerId,jdbcType=INTEGER},
+      </if>
+      <if test="ownerName != null">
+        #{ownerName,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerPhone != null">
+        #{ownerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="itemType != null">
+        #{itemType,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="pic != null">
+        #{pic,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="lng != null">
+        #{lng,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="introduce != null">
+        #{introduce,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=INTEGER},
+      </if>
+    </trim>
+    <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+        SELECT LAST_INSERT_ID() AS id
+    </selectKey>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.Project">
+    update project
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="maintainContract != null">
+        maintain_contract = #{maintainContract,jdbcType=DATE},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null">
+        create_user_id = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createResource != null">
+        create_resource = #{createResource,jdbcType=INTEGER},
+      </if>
+      <if test="ownerId != null">
+        owner_id = #{ownerId,jdbcType=INTEGER},
+      </if>
+      <if test="ownerName != null">
+        owner_name = #{ownerName,jdbcType=VARCHAR},
+      </if>
+      <if test="ownerPhone != null">
+        owner_phone = #{ownerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="itemType != null">
+        item_type = #{itemType,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="pic != null">
+        pic = #{pic,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="lng != null">
+        lng = #{lng,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        lat = #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="introduce != null">
+        introduce = #{introduce,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xmsmartcity.maintain.pojo.Project">
+    update project
+    set name = #{name,jdbcType=VARCHAR},
+      maintain_contract = #{maintainContract,jdbcType=DATE},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      create_resource = #{createResource,jdbcType=INTEGER},
+      owner_id = #{ownerId,jdbcType=INTEGER},
+      owner_name = #{ownerName,jdbcType=VARCHAR},
+      owner_phone = #{ownerPhone,jdbcType=VARCHAR},
+      item_type = #{itemType,jdbcType=INTEGER},
+      state = #{state,jdbcType=INTEGER},
+      pic = #{pic,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      lng = #{lng,jdbcType=VARCHAR},
+      lat = #{lat,jdbcType=VARCHAR},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      is_del = #{isDel,jdbcType=INTEGER},
+      introduce = #{introduce,jdbcType=LONGVARCHAR},
+      company_id = #{companyId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.Project">
+    update project
+    set name = #{name,jdbcType=VARCHAR},
+      maintain_contract = #{maintainContract,jdbcType=DATE},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      create_user_id = #{createUserId,jdbcType=INTEGER},
+      create_resource = #{createResource,jdbcType=INTEGER},
+      owner_id = #{ownerId,jdbcType=INTEGER},
+      owner_name = #{ownerName,jdbcType=VARCHAR},
+      owner_phone = #{ownerPhone,jdbcType=VARCHAR},
+      item_type = #{itemType,jdbcType=INTEGER},
+      state = #{state,jdbcType=INTEGER},
+      pic = #{pic,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      lng = #{lng,jdbcType=VARCHAR},
+      lat = #{lat,jdbcType=VARCHAR},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      is_del = #{isDel,jdbcType=INTEGER},
+      company_id = #{companyId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

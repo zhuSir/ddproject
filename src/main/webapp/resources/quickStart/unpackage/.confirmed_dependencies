@@ -1,0 +1,214 @@
+{
+	"index.html": {
+		"resources": [
+			"css/index.css",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"html/gsgl/gsgi.html",
+			"html/xiangmu/xiangmu.html",
+			"html/other/other.html"
+		],
+		"refer": [
+			"html/gsgl/gsgi.html",
+			"html/xiangmu/xiangmu.html",
+			"html/other/other.html"
+		]
+	},
+	"html/gsgl/join.html": {
+		"resources": [
+			"img/gsgl/1-3 申请加入公司.png",
+			"img/gsgl/1-2 搜索公司.png",
+			"img/gsgl/1-1 咚咚首页.png",
+			"img/gsgl/1-4 等待管理员同意.png",
+			"css/gosgl/join.css",
+			"html/gsgl/gsgi.html",
+			"img/gsgl/1-2.png",
+			"img/gsgl/1-4.png",
+			"img/gsgl/1-1.png",
+			"img/gsgl/1-3.png",
+			"css/mui.css"
+		],
+		"refer": [
+			"html/gsgl/gsgi.html"
+		]
+	},
+	"html/gsgl/gsgi.html": {
+		"resources": [
+			"js/mui.js",
+			"css/gsgl.css",
+			"css/mui.css",
+			"html/gsgl/join.html",
+			"html/gsgl/create.html",
+			"index.html",
+			"html/gsgl/jionmore.html",
+			"html/gsgl/invite.html",
+			"html/gsgl/transfer.html",
+			"js/jquery.min.js",
+			"js/public.js"
+		],
+		"refer": [
+			"html/gsgl/join.html",
+			"html/gsgl/create.html",
+			"index.html",
+			"html/gsgl/jionmore.html",
+			"html/gsgl/invite.html",
+			"html/gsgl/transfer.html"
+		]
+	},
+	"html/gsgl/create.html": {
+		"resources": [
+			"img/gsgl/2-4 完成创建.png",
+			"img/gsgl/2-2 咚咚首页.png",
+			"img/gsgl/2-3 创建公司.png",
+			"css/gosgl/join.css",
+			"html/gsgl/gsgi.html",
+			"img/gsgl/2-4.png",
+			"img/gsgl/2-3.png",
+			"css/mui.css",
+			"img/gsgl/2-2.png"
+		],
+		"refer": [
+			"html/gsgl/gsgi.html"
+		]
+	},
+	"html/gsgl/jionmore.html": {
+		"resources": [
+			"img/gsgl/5-3 我的公司.png",
+			"img/gsgl/5-1 咚咚首页.png",
+			"img/gsgl/5-2 导航栏.png",
+			"css/gosgl/join.css"
+		]
+	},
+	"html/gsgl/invite.html": {
+		"resources": [
+			"img/gsgl/6-3 输入手机号.png",
+			"img/gsgl/6-2 成员管理.png",
+			"img/gsgl/6-1 我的公司.png",
+			"css/mui.css",
+			"css/gosgl/join.css",
+			"html/gsgl/gsgi.html",
+			"img/gsgl/6-3.png",
+			"img/gsgl/6-2.png",
+			"img/gsgl/6-1.png"
+		],
+		"refer": [
+			"html/gsgl/gsgi.html"
+		]
+	},
+	"html/gsgl/transfer.html": {
+		"resources": [
+			"img/gsgl/4-2.png",
+			"img/gsgl/4-3.png",
+			"img/gsgl/4-1.png",
+			"css/mui.css",
+			"img/gsgl/4-4.png",
+			"css/gosgl/join.css",
+			"html/gsgl/gsgi.html"
+		],
+		"refer": [
+			"html/gsgl/gsgi.html"
+		]
+	},
+	"html/xiangmu/xiangmu.html": {
+		"resources": [
+			"css/gsgl.css",
+			"css/mui.css",
+			"html/xiangmu/joinject.html",
+			"index.html",
+			"js/mui.js",
+			"html/xiangmu/creatproject.html",
+			"html/xiangmu/quitproject.html",
+			"html/xiangmu/transject.html",
+			"html/xiangmu/invive.html",
+			"js/public.js"
+		],
+		"refer": [
+			"html/xiangmu/joinject.html",
+			"index.html",
+			"html/xiangmu/creatproject.html",
+			"html/xiangmu/quitproject.html",
+			"html/xiangmu/transject.html",
+			"html/xiangmu/invive.html"
+		]
+	},
+	"html/xiangmu/joinject.html": {
+		"resources": [
+			"img/xiangmu/1-4 加入服务内容.png",
+			"css/xiangmu/public.css",
+			"img/xiangmu/1-1 咚咚首页 （未加入项目）.png",
+			"html/xiangmu/xiangmu.html",
+			"img/xiangmu/1-2 我的项目 （已加入项目）.png",
+			"img/xiangmu/1-3 加入项目.png",
+			"img/xiangmu/1-4.png",
+			"img/xiangmu/1-2.png",
+			"img/xiangmu/1-3.png",
+			"img/xiangmu/1-1.png"
+		],
+		"refer": [
+			"html/xiangmu/xiangmu.html"
+		]
+	},
+	"html/xiangmu/creatproject.html": {
+		"resources": [
+			"img/xiangmu/2-1.png",
+			"css/xiangmu/public.css",
+			"img/xiangmu/2-2.png",
+			"img/xiangmu/2-4.png",
+			"img/xiangmu/2-5.png",
+			"css/mui.css",
+			"html/xiangmu/xiangmu.html",
+			"img/xiangmu/2-3.png"
+		],
+		"refer": [
+			"html/xiangmu/xiangmu.html"
+		]
+	},
+	"html/xiangmu/quitproject.html": {
+		"resources": [
+			"img/xiangmu/3-2.png",
+			"css/xiangmu/public.css",
+			"img/xiangmu/3-1.png",
+			"img/xiangmu/3-3.png",
+			"img/xiangmu/3-4.png",
+			"css/mui.css",
+			"html/xiangmu/xiangmu.html"
+		],
+		"refer": [
+			"html/xiangmu/xiangmu.html"
+		]
+	},
+	"html/xiangmu/transject.html": {
+		"resources": [
+			"img/xiangmu/4-1.png",
+			"css/xiangmu/public.css",
+			"img/xiangmu/4-4.png",
+			"img/xiangmu/4-3.png",
+			"img/xiangmu/4-2.png",
+			"css/mui.css",
+			"html/xiangmu/xiangmu.html"
+		],
+		"refer": [
+			"html/xiangmu/xiangmu.html"
+		]
+	},
+	"html/xiangmu/invive.html": {
+		"resources": [
+			"css/xiangmu/public.css",
+			"html/xiangmu/xiangmu.html"
+		],
+		"refer": [
+			"html/xiangmu/xiangmu.html"
+		]
+	},
+	"html/other/other.html": {
+		"resources": [
+			"index.html",
+			"css/gsgl.css",
+			"css/mui.css"
+		],
+		"refer": [
+			"index.html"
+		]
+	}
+}

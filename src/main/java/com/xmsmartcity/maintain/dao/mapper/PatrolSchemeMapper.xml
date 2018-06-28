@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.PatrolSchemeMapper">
+	<resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.PatrolScheme">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="patrol_user_id" jdbcType="INTEGER" property="patrolUserId" />
+		<result column="patrol_user_name" jdbcType="VARCHAR" property="patrolUserName" />
+		<result column="patrol_user_mobile" jdbcType="VARCHAR"
+			property="patrolUserMobile" />
+		<result column="check_time" jdbcType="TIMESTAMP" property="checkTime" />
+		<result column="period" jdbcType="INTEGER" property="period" />
+		<result column="patrol_abnormal" jdbcType="INTEGER" property="patrolAbnormal" />
+		<result column="is_combine" jdbcType="INTEGER" property="isCombine" />
+		<result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+		<result column="create_user_id" jdbcType="INTEGER" property="createUserId" />
+		<result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+		<result column="update_user_id" jdbcType="INTEGER" property="updateUserId" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="is_del" jdbcType="INTEGER" property="isDel" />
+	</resultMap>
+  
+  
+  <resultMap id="ResultMap" type="com.xmsmartcity.maintain.pojo.PatrolScheme" extends="BaseResultMap">
+	<result column="equip_id" jdbcType="VARCHAR" property="equipId" />
+  	<result column="equip_name" jdbcType="VARCHAR" property="equipName" />
+  	<result column="period_name" jdbcType="VARCHAR" property="periodName" />
+  	<result column="patrol_abnormal_name" jdbcType="VARCHAR" property="patrolAbnormalName" />
+  	<result column="position" jdbcType="VARCHAR" property="position" />
+  </resultMap>
+	<sql id="Base_Column_List">
+		id, name, patrol_user_id, patrol_user_name, patrol_user_mobile,
+		check_time, period,
+		patrol_abnormal, is_combine, createtime, create_user_id, updatetime,
+		update_user_id,
+		remark, is_del
+	</sql>
+	<sql id="Rel_Column_List">
+		p.id, p.name, p.patrol_user_id, p.patrol_user_name, p.patrol_user_mobile,
+		p.check_time, p.period,
+		p.patrol_abnormal, p.is_combine, p.createtime, p.create_user_id, p.updatetime,
+		p.update_user_id,
+		p.remark, p.is_del
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from patrol_scheme
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from patrol_scheme
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.PatrolScheme">
+		insert into patrol_scheme (id, name, patrol_user_id,
+		patrol_user_name, patrol_user_mobile, check_time,
+		period, patrol_abnormal,
+		is_combine, createtime, create_user_id,
+		updatetime, update_user_id, remark,
+		is_del)
+		values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+		#{patrolUserId,jdbcType=INTEGER},
+		#{patrolUserName,jdbcType=VARCHAR}, #{patrolUserMobile,jdbcType=VARCHAR},
+		#{checkTime,jdbcType=TIMESTAMP},
+		#{period,jdbcType=INTEGER}, #{patrolAbnormal,jdbcType=INTEGER},
+		#{isCombine,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP},
+		#{createUserId,jdbcType=INTEGER},
+		#{updatetime,jdbcType=TIMESTAMP}, #{updateUserId,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
+		#{isDel,jdbcType=INTEGER})
+	</insert>
+
+	<insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.PatrolScheme" keyProperty="id">
+		<selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+        	SELECT LAST_INSERT_ID() AS id
+    	</selectKey>
+		insert into patrol_scheme
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="patrolUserId != null">
+				patrol_user_id,
+			</if>
+			<if test="patrolUserName != null">
+				patrol_user_name,
+			</if>
+			<if test="patrolUserMobile != null">
+				patrol_user_mobile,
+			</if>
+			<if test="checkTime != null">
+				check_time,
+			</if>
+			<if test="period != null">
+				period,
+			</if>
+			<if test="patrolAbnormal != null">
+				patrol_abnormal,
+			</if>
+			<if test="isCombine != null">
+				is_combine,
+			</if>
+			<if test="createtime != null">
+				createtime,
+			</if>
+			<if test="createUserId != null">
+				create_user_id,
+			</if>
+			<if test="updatetime != null">
+				updatetime,
+			</if>
+			<if test="updateUserId != null">
+				update_user_id,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="patrolUserId != null">
+				#{patrolUserId,jdbcType=INTEGER},
+			</if>
+			<if test="patrolUserName != null">
+				#{patrolUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="patrolUserMobile != null">
+				#{patrolUserMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="checkTime != null">
+				#{checkTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="period != null">
+				#{period,jdbcType=INTEGER},
+			</if>
+			<if test="patrolAbnormal != null">
+				#{patrolAbnormal,jdbcType=INTEGER},
+			</if>
+			<if test="isCombine != null">
+				#{isCombine,jdbcType=INTEGER},
+			</if>
+			<if test="createtime != null">
+				#{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId,jdbcType=INTEGER},
+			</if>
+			<if test="updatetime != null">
+				#{updatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				#{updateUserId,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				#{isDel,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.PatrolScheme">
+		update patrol_scheme
+		<set>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="patrolUserId != null">
+				patrol_user_id = #{patrolUserId,jdbcType=INTEGER},
+			</if>
+			<if test="patrolUserName != null">
+				patrol_user_name = #{patrolUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="patrolUserMobile != null">
+				patrol_user_mobile = #{patrolUserMobile,jdbcType=VARCHAR},
+			</if>
+			<if test="checkTime != null">
+				check_time = #{checkTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="period != null">
+				period = #{period,jdbcType=INTEGER},
+			</if>
+			<if test="patrolAbnormal != null">
+				patrol_abnormal = #{patrolAbnormal,jdbcType=INTEGER},
+			</if>
+			<if test="isCombine != null">
+				is_combine = #{isCombine,jdbcType=INTEGER},
+			</if>
+			<if test="createtime != null">
+				createtime = #{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				create_user_id = #{createUserId,jdbcType=INTEGER},
+			</if>
+			<if test="updatetime != null">
+				updatetime = #{updatetime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.PatrolScheme">
+		update patrol_scheme
+		set name = #{name,jdbcType=VARCHAR},
+		patrol_user_id = #{patrolUserId,jdbcType=INTEGER},
+		patrol_user_name = #{patrolUserName,jdbcType=VARCHAR},
+		patrol_user_mobile = #{patrolUserMobile,jdbcType=VARCHAR},
+		check_time = #{checkTime,jdbcType=TIMESTAMP},
+		period = #{period,jdbcType=INTEGER},
+		patrol_abnormal = #{patrolAbnormal,jdbcType=INTEGER},
+		is_combine = #{isCombine,jdbcType=INTEGER},
+		createtime = #{createtime,jdbcType=TIMESTAMP},
+		create_user_id = #{createUserId,jdbcType=INTEGER},
+		updatetime = #{updatetime,jdbcType=TIMESTAMP},
+		update_user_id = #{updateUserId,jdbcType=INTEGER},
+		remark = #{remark,jdbcType=VARCHAR},
+		is_del = #{isDel,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<select id="selectByRecord" parameterType="map" resultMap="ResultMap">
+	SELECT *,GROUP_CONCAT(res.eqName) as equipName,GROUP_CONCAT(res.eqId) as equipId FROM(
+		SELECT DISTINCT
+		<include refid="Rel_Column_List" />,u.head_pic as patrolUserPic,
+		st.type_name as period_name,sta.type_name as patrol_abnormal_name,CONCAT(e.province,e.city,e.area,e.address) as position,
+		e.equip_name as eqName,e.id as eqId
+		FROM patrol_scheme p
+		LEFT JOIN `user` u on u.id=p.patrol_user_id and u.is_del=0
+		LEFT JOIN user cu on cu.company_id=u.company_id and cu.is_del=0
+		LEFT JOIN scheme_equip se on se.patrol_scheme_id=p.id 
+		LEFT JOIN equips e on e.id=se.equip_id and e.is_del=0
+		LEFT JOIN sys_type st on st.id=p.period
+		LEFT JOIN sys_type sta on sta.id=p.patrol_abnormal
+		where p.is_del=0
+		<if test="record.userId != null and record.userId != 0">
+		    AND cu.id=#{record.userId,jdbcType=INTEGER}
+		</if>
+		<if test="record.id != null and record.id!=0">
+			and p.id = #{record.id,jdbcType=INTEGER}
+		</if>
+		<if test="record.name != null">
+			and p.name like CONCAT('%', #{record.name,jdbcType=VARCHAR}, '%')
+		</if>
+		<if test="record.patrolUserId != null and record.patrolUserId != '' ">
+			and p.patrol_user_id = #{record.patrolUserId,jdbcType=INTEGER}
+		</if>
+		<if test="record.patrolUserName != null and record.patrolUserName != '' ">
+			and p.patrol_user_name = #{record.patrolUserName,jdbcType=VARCHAR}
+		</if>
+		<if test="record.patrolUserMobile != null and record.patrolUserMobile != ''">
+			and p.patrol_user_mobile =#{record.patrolUserMobile,jdbcType=VARCHAR}
+		</if>
+		<if test="record.checkTime != null">
+			and p.check_time = #{record.checkTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="record.equipId != null and record.equipId !='' ">
+			and e.id = #{record.equipId}
+		</if>
+		<if test="record.period != null and record.period !=0 ">
+			and p.period = #{record.period,jdbcType=INTEGER}
+		</if>
+		<if test="record.patrolAbnormal != null and record.patrolAbnormal != 0 ">
+			and p.patrol_abnormal = #{record.patrolAbnormal,jdbcType=INTEGER}
+		</if>
+		<if test="ids !=null and ids !=''">
+			and p.id in (${ids})
+		</if>
+	)res GROUP BY res.id
+	<if test="startIndex !=null and pageSize !=null">
+			LIMIT #{startIndex},#{pageSize}
+	</if>
+	</select>
+	
+	<!-- 根据ID查找巡检记录(巡检负责人、公司负责人权限) -->
+	<select id="selectListByIds" parameterType="map" resultType="map">
+		SELECT DISTINCT 0 as patrolSchemeRecordId,ps.name as patrolSchemeName,ps.id as patrolSchemeId,ps.check_time as checkTime,ps.check_time as patrolTime,3 as state,
+		ps.patrol_user_id as patrolUserId,ps.patrol_user_name as patrolUserName,
+		ps.patrol_user_mobile as patrolUserMobile,ps.period,st.type_name as periodName,sta.type_name as patrolAbnormalName,CONCAT(e.province,e.city,e.area,e.address) as position,
+		GROUP_CONCAT(e.equip_name) as equipName,GROUP_CONCAT(e.id) as equipId
+		FROM patrol_scheme ps
+		LEFT JOIN `user` u on u.id=ps.patrol_user_id and u.is_del=0
+		LEFT JOIN scheme_equip se on se.patrol_scheme_id=ps.id 
+		LEFT JOIN equips e on e.id=se.equip_id and e.is_del=0
+		LEFT JOIN company c on c.id =u.company_id AND c.is_del=0
+		LEFT JOIN patrol_scheme_record pr on pr.patrol_scheme_id=ps.id and pr.is_del=0
+		LEFT JOIN sys_type st on st.id=ps.period
+		LEFT JOIN sys_type sta on sta.id=ps.patrol_abnormal
+		where ps.id in (${ids}) AND (ps.patrol_user_id=#{userId} or c.responser_id=#{userId}) AND ps.is_del=0 
+		<if test="equipId != null and equipId !='' ">
+			and e.id = #{equipId}
+		</if>
+		GROUP BY ps.id
+	</select>
+	
+		<!-- 根据ID查找巡检记录(公司成员权限) -->
+	<select id="selectListByIdsPermisson" parameterType="map" resultType="map">
+		SELECT DISTINCT 0 as patrolSchemeRecordId,ps.name as patrolSchemeName,ps.id as patrolSchemeId,ps.check_time as checkTime,ps.check_time as patrolTime,3 as state,
+		ps.patrol_user_id as patrolUserId,ps.patrol_user_name as patrolUserName,
+		ps.patrol_user_mobile as patrolUserMobile,ps.period,st.type_name as periodName,sta.type_name as patrolAbnormalName,CONCAT(e.province,e.city,e.area,e.address) as position,
+		GROUP_CONCAT(e.equip_name) as equipName,GROUP_CONCAT(e.id) as equipId
+		FROM patrol_scheme ps
+		LEFT JOIN `user` u on u.id=ps.patrol_user_id and u.is_del=0
+		LEFT JOIN user cu on cu.company_id=u.company_id and cu.is_del=0
+		LEFT JOIN scheme_equip se on se.patrol_scheme_id=ps.id 
+		LEFT JOIN equips e on e.id=se.equip_id and e.is_del=0
+		LEFT JOIN patrol_scheme_record pr on pr.patrol_scheme_id=ps.id and pr.is_del=0
+		LEFT JOIN sys_type st on st.id=ps.period
+		LEFT JOIN sys_type sta on sta.id=ps.patrol_abnormal
+		where ps.id in (${ids}) AND cu.id=#{userId} AND ps.is_del=0 
+		<if test="equipId != null and equipId !='' ">
+			and e.id = #{equipId}
+		</if>
+		GROUP BY ps.id
+	</select>
+	
+	<!-- 根据ID查找巡检记录（排除今日已生成的巡检记录） -->
+	<select id="selectListByIdsNoToday" parameterType="map" resultType="map">
+		SELECT DISTINCT 0 as patrolSchemeRecordId,ps.name as patrolSchemeName,ps.id as patrolSchemeId,ps.check_time as checkTime,ps.check_time as patrolTime,3 as state,
+		ps.patrol_user_id as patrolUserId,ps.patrol_user_name as patrolUserName,
+		ps.patrol_user_mobile as patrolUserMobile,ps.period,st.type_name as periodName,sta.type_name as patrolAbnormalName,CONCAT(e.province,e.city,e.area,e.address) as position,
+		GROUP_CONCAT(e.equip_name) as equipName,GROUP_CONCAT(e.id) as equipId
+		FROM patrol_scheme ps
+		LEFT JOIN `user` u on u.id=ps.patrol_user_id and u.is_del=0
+		LEFT JOIN scheme_equip se on se.patrol_scheme_id=ps.id 
+		LEFT JOIN equips e on e.id=se.equip_id and e.is_del=0
+		LEFT JOIN company c on c.id =u.company_id AND c.is_del=0
+		LEFT JOIN patrol_scheme_record pr on pr.patrol_scheme_id=ps.id and pr.is_del=0
+		LEFT JOIN sys_type st on st.id=ps.period
+		LEFT JOIN sys_type sta on sta.id=ps.patrol_abnormal
+		where ps.id in (${ids}) AND (ps.patrol_user_id=#{userId} or c.responser_id=#{userId}) AND ps.is_del=0 
+		AND (TO_DAYS(NOW())-TO_DAYS(pr.createtime)>0 OR pr.id is NULL)
+		<if test="equipId != null and equipId !='' ">
+			and e.id = #{equipId}
+		</if>
+		GROUP BY ps.id
+	</select>
+</mapper>

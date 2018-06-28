@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.UserTokenMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.UserToken">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="sys_token" jdbcType="VARCHAR" property="sysToken" />
+    <result column="push_token" jdbcType="VARCHAR" property="pushToken" />
+    <result column="type" jdbcType="BIT" property="type" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, sys_token, push_token, type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_token
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getTokenInfo" parameterType="map" resultMap="BaseResultMap"  >
+  	select 
+  	<include refid="Base_Column_List" />
+  	from user_token
+  	<where>
+  		<if test="userId != null">
+	      user_id = #{userId,jdbcType=INTEGER}
+	    </if>
+	    <if test="pushToken != null">
+	      and push_token = #{pushToken,jdbcType=VARCHAR}
+	    </if>
+	    <if test="sysToken != null">
+	      and sys_token = #{sysToken,jdbcType=VARCHAR}
+	    </if>
+  	</where>
+  	limit 0,1
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user_token
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.UserToken">
+    insert into user_token (id, user_id, sys_token, 
+      push_token, type)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{sysToken,jdbcType=VARCHAR}, 
+      #{pushToken,jdbcType=VARCHAR}, #{type,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.UserToken">
+    insert into user_token
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="sysToken != null">
+        sys_token,
+      </if>
+      <if test="pushToken != null">
+        push_token,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="sysToken != null">
+        #{sysToken,jdbcType=VARCHAR},
+      </if>
+      <if test="pushToken != null">
+        #{pushToken,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.UserToken">
+    update user_token
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="sysToken != null">
+        sys_token = #{sysToken,jdbcType=VARCHAR},
+      </if>
+      <if test="pushToken != null">
+        push_token = #{pushToken,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.UserToken">
+    update user_token
+    set user_id = #{userId,jdbcType=INTEGER},
+      sys_token = #{sysToken,jdbcType=VARCHAR},
+      push_token = #{pushToken,jdbcType=VARCHAR},
+      type = #{type,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <delete id="removeByParams" parameterType="map">
+	DELETE FROM user_token WHERE sys_token = #{sysToken} AND user_id=#{userId}
+  </delete>
+  
+  <delete id="deleteForIds" parameterType="map">
+	DELETE FROM user_token WHERE id in 
+	<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+  		#{item}
+ 	</foreach>
+  </delete>
+  
+  <select id="getTokenInfoByParams" parameterType="map" resultMap="BaseResultMap">
+  	select 
+    	<include refid="Base_Column_List" />
+    from user_token
+    where
+    type in
+    <foreach item="item" index="index" collection="types" open="(" separator="," close=")">  
+  		#{item}
+ 	</foreach>
+    <if test="userId != null">
+    	and user_id = #{userId}
+    </if>
+    <if test="pushToken != null">
+    	and push_token = #{pushToken}
+    </if>
+  </select>
+    
+</mapper>

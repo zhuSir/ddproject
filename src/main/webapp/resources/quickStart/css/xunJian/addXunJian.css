@@ -1,0 +1,79 @@
+.contentTitle
+{
+    color: #ff8100;
+    font-size: 20px;
+    margin-left: 3%;
+}
+.textS
+{
+    color: black;
+    font-size: 15px;
+    margin-left: 3%;
+    margin-right: 3%;
+}
+.textS2
+{
+    color: black;
+    font-size: 15px;
+    margin-left: 3%;
+    margin-right: 3%;
+    float: left;
+    margin-top: 0px;
+}
+.detailTitle
+{
+    color: #ff8100;
+    font-size: 19px;
+    margin-left: 3%;
+}
+.detailTitle2
+{
+    color: #ff8100;
+    font-size: 19px;
+    margin-left: 5%;
+    margin-top: 30px;
+    float: left;
+}
+.leftImage
+{
+    float: left;
+    width:40%;
+    height: 270px;
+    margin-left: 3%;
+}
+.rightImage
+{
+float: right;
+    width:40%;
+    height: 270px;
+    margin-right: 3%;
+}
+.imageleftTitle
+{
+    margin-top: 12px;
+    color: gray;
+    margin-left: 15%;
+    float: left;
+}
+.imagerightTitle
+{
+    margin-top: 12px;
+    color: gray;
+    margin-right: 15%;
+    float: right;
+}
+.leftMagin15
+{
+    margin-right: 15%;
+}
+.leftMagin10
+{
+    margin-right: 10%;
+}
+.rightMagin15
+{
+    margin-right: 15%;
+}
+.rightMagin10 {
+    margin-right: 10%;
+}

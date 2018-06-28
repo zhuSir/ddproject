@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.SignInMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.SignIn">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="fault_info_id" jdbcType="INTEGER" property="faultInfoId" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="lng" jdbcType="VARCHAR" property="lng" />
+    <result column="lat" jdbcType="VARCHAR" property="lat" />
+    <result column="checkin_time" jdbcType="TIMESTAMP" property="checkinTime" />
+    <result column="checkout_time" jdbcType="TIMESTAMP" property="checkoutTime" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, fault_info_id, createtime, lng, lat, checkin_time, checkout_time, location, 
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sign_in
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sign_in
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.SignIn">
+    insert into sign_in (id, user_id, fault_info_id, 
+      createtime, lng, lat, 
+      checkin_time, checkout_time, location, 
+      content)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{faultInfoId,jdbcType=INTEGER}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{lng,jdbcType=VARCHAR}, #{lat,jdbcType=VARCHAR}, 
+      #{checkinTime,jdbcType=TIMESTAMP}, #{checkoutTime,jdbcType=TIMESTAMP}, #{location,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.SignIn">
+    insert into sign_in
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="faultInfoId != null">
+        fault_info_id,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="lng != null">
+        lng,
+      </if>
+      <if test="lat != null">
+        lat,
+      </if>
+      <if test="checkinTime != null">
+        checkin_time,
+      </if>
+      <if test="checkoutTime != null">
+        checkout_time,
+      </if>
+      <if test="location != null">
+        location,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="faultInfoId != null">
+        #{faultInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lng != null">
+        #{lng,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="checkinTime != null">
+        #{checkinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkoutTime != null">
+        #{checkoutTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="location != null">
+        #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.SignIn">
+    update sign_in
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="faultInfoId != null">
+        fault_info_id = #{faultInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lng != null">
+        lng = #{lng,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        lat = #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="checkinTime != null">
+        checkin_time = #{checkinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkoutTime != null">
+        checkout_time = #{checkoutTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="location != null">
+        location = #{location,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.SignIn">
+    update sign_in
+    set user_id = #{userId,jdbcType=INTEGER},
+      fault_info_id = #{faultInfoId,jdbcType=INTEGER},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      lng = #{lng,jdbcType=VARCHAR},
+      lat = #{lat,jdbcType=VARCHAR},
+      checkin_time = #{checkinTime,jdbcType=TIMESTAMP},
+      checkout_time = #{checkoutTime,jdbcType=TIMESTAMP},
+      location = #{location,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+	<!-- 根据日期获取签到列表 -->
+  <select id="getSignInByDate" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from sign_in
+    WHERE checkin_time BETWEEN #{checkinTime,jdbcType=TIMESTAMP} and DATE_ADD(#{checkinTime,jdbcType=TIMESTAMP},INTERVAL 1 DAY) and user_id=#{userId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getSignDayByMonth" parameterType="map" resultType="java.util.Date">
+  	select checkin_time 
+  	from sign_in 
+  	where checkin_time Between #{checkinTime,jdbcType=TIMESTAMP} and DATE_ADD(#{checkinTime,jdbcType=TIMESTAMP},INTERVAL 1 MONTH) and user_id=#{userId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 根据日期获取团队下人员签到详情-->
+  <select id="getSignInForCollect" parameterType="map" resultType="map">
+  	SELECT
+	   s.checkin_time,s.checkout_time,s.content,s.fault_info_id,s.location,u.head_pic,u.`name`,u.phone,c.`name`
+	from sign_in s 
+	INNER JOIN `user` u ON s.user_id = u.id AND u.is_del = 0
+	LEFT JOIN company c ON u.company_id = c.id AND c.is_del = 0
+	WHERE s.checkin_time BETWEEN #{checkinTime,jdbcType=TIMESTAMP}
+	and DATE_ADD(#{checkinTime,jdbcType=TIMESTAMP},INTERVAL 1 DAY) 
+	and c.id = #{companyId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getCollectDayByMonth" parameterType="map" resultType="java.util.Date">
+  	select checkin_time 
+  	from sign_in 
+  	where checkin_time Between #{monthDate,jdbcType=TIMESTAMP} 
+  	and DATE_ADD(#{monthDate,jdbcType=TIMESTAMP},INTERVAL 1 MONTH) 
+  	and user_id IN (select id from `user` WHERE company_id = #{companyId,jdbcType=INTEGER})
+  </select>
+  
+  <!-- web页面查询 签到列表 -->
+  <select id="selectListByDate" parameterType="map" resultType="map" >
+  	SELECT s.checkin_time,s.checkout_time,s.content,s.fault_info_id,s.location,u.head_pic,u.`name`,u.phone
+	FROM sign_in s INNER JOIN `user` u ON s.user_id = u.id AND u.is_del = 0
+	WHERE u.id = #{userId}
+	<!-- 本月 -->
+	<if test="type == 1">
+		AND date_format(s.checkin_time,'%Y-%m')=date_format(now(),'%Y-%m')
+	</if>
+	<!-- 本周 -->
+	<if test="type == 2">		
+		AND YEARWEEK(date_format(s.checkin_time,'%Y-%m-%d')) = YEARWEEK(now())
+	</if>
+  </select>
+  
+</mapper>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.PatrolSchemeModelItemMapper">
+	<resultMap id="BaseResultMap"
+		type="com.xmsmartcity.maintain.pojo.PatrolSchemeModelItem">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="patrol_scheme_model_id" jdbcType="INTEGER"
+			property="patrolSchemeModelId" />
+		<result column="number" jdbcType="INTEGER" property="number" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="introduce" jdbcType="VARCHAR" property="introduce" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="is_del" jdbcType="INTEGER" property="isDel" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, patrol_scheme_model_id, number, name, introduce, remark, is_del
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from patrol_scheme_model_item
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from patrol_scheme_model_item
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.PatrolSchemeModelItem">
+		insert into patrol_scheme_model_item (id, patrol_scheme_model_id, number,
+		name, introduce, remark,
+		is_del)
+		values (#{id,jdbcType=INTEGER}, #{patrolSchemeModelId,jdbcType=INTEGER},
+		#{number,jdbcType=INTEGER},
+		#{name,jdbcType=VARCHAR}, #{introduce,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+		#{isDel,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.PatrolSchemeModelItem">
+		insert into patrol_scheme_model_item
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="patrolSchemeModelId != null">
+				patrol_scheme_model_id,
+			</if>
+			<if test="number != null">
+				number,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="introduce != null">
+				introduce,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="isDel != null">
+				is_del,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="patrolSchemeModelId != null">
+				#{patrolSchemeModelId,jdbcType=INTEGER},
+			</if>
+			<if test="number != null">
+				#{number,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="introduce != null">
+				#{introduce,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				#{isDel,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+
+	<!-- 批量保存 -->
+	<insert id="insertBatch" parameterType="java.util.List"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into patrol_scheme_model_item (patrol_scheme_model_id,number,
+		name, introduce)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.patrolSchemeModelId},#{item.number},#{item.name},#{item.introduce})
+		</foreach>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.PatrolSchemeModelItem">
+		update patrol_scheme_model_item
+		<set>
+			<if test="patrolSchemeModelId != null">
+				patrol_scheme_model_id = #{patrolSchemeModelId,jdbcType=INTEGER},
+			</if>
+			<if test="number != null">
+				number = #{number,jdbcType=INTEGER},
+			</if>
+			<if test="name != null">
+				name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="introduce != null">
+				introduce = #{introduce,jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="isDel != null">
+				is_del = #{isDel,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.PatrolSchemeModelItem">
+		update patrol_scheme_model_item
+		set patrol_scheme_model_id = #{patrolSchemeModelId,jdbcType=INTEGER},
+		number = #{number,jdbcType=INTEGER},
+		name = #{name,jdbcType=VARCHAR},
+		introduce = #{introduce,jdbcType=VARCHAR},
+		remark = #{remark,jdbcType=VARCHAR},
+		is_del = #{isDel,jdbcType=INTEGER}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<select id="selectByRecord" parameterType="com.xmsmartcity.maintain.pojo.PatrolSchemeModelItem"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from patrol_scheme_model_item
+		where is_del=0
+		<if test="id != null">
+			and id = #{id,jdbcType=INTEGER}
+		</if>
+		<if test="patrolSchemeModelId != null">
+			and patrol_scheme_model_id = #{patrolSchemeModelId,jdbcType=INTEGER}
+		</if>
+		<if test="number != null">
+			and number = #{number,jdbcType=INTEGER}
+		</if>
+		<if test="name != null">
+			and name = #{name,jdbcType=VARCHAR}
+		</if>
+		<if test="introduce != null">
+			and introduce = #{introduce,jdbcType=VARCHAR}
+		</if>
+		<if test="remark != null">
+			and remark = #{remark,jdbcType=VARCHAR}
+		</if>
+		<if test="isDel != null">
+			and is_del = #{isDel,jdbcType=INTEGER}
+		</if>
+	</select>
+
+	<delete id="deleteByPatrolSchemeModelId" parameterType="java.lang.Integer">
+		delete from patrol_scheme_model_item
+		where patrol_scheme_model_id = #{patrolSchemeModelId,jdbcType=INTEGER}
+	</delete>
+</mapper>

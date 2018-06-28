@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.CompanyMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.Company">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="short_name" jdbcType="VARCHAR" property="shortName" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="lng" jdbcType="VARCHAR" property="lng" />
+    <result column="lat" jdbcType="VARCHAR" property="lat" />
+    <result column="head_pic" jdbcType="VARCHAR" property="headPic" />
+    <result column="responser_id" jdbcType="INTEGER" property="responserId" />
+    <result column="responser_name" jdbcType="VARCHAR" property="responserName" />
+    <result column="responser_phone" jdbcType="VARCHAR" property="responserPhone" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="three_certificates" jdbcType="VARCHAR" property="threeCertificates" />
+    <result column="check_state" jdbcType="INTEGER" property="checkState" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xmsmartcity.maintain.pojo.Company">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  
+  <resultMap id="Result0" type="com.xmsmartcity.maintain.pojo.Company">
+  	<result column="maintain_ing_count" jdbcType="INTEGER" property="maintainIngCount" />
+  	<result column="maintain_month_count" jdbcType="INTEGER" property="maintainMonthCount" />
+  	<result column="maintain_sum_count" jdbcType="INTEGER" property="maintainSumCount" />
+  	<result column="fault_ing_count" jdbcType="INTEGER" property="faultIngCount" />
+  	<result column="fault_month_count" jdbcType="INTEGER" property="faultMonthCount" />
+  	<result column="fault_sum_count" jdbcType="INTEGER" property="faultSumCount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, short_name, state, telephone, province, city, area, address, lng, lat, 
+    head_pic, responser_id, responser_name, responser_phone, createtime, three_certificates, 
+    check_state, updatetime, is_del
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from company
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectCount" resultType="java.lang.Integer">
+    select count(1) from company
+  </select>
+  
+  <!-- 根据负责人手机号查询团队 -->
+  <select id="selectByResponserPhone" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from company
+    where responser_phone = #{phone,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据负责人Id查询团队 -->
+  <select id="selectByResponserId" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from company
+    where responser_id = #{userId,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 根据团队名称搜索 -->
+  <select id="selectListByName" parameterType="map" resultMap="ResultMapWithBLOBs"  >
+  	select
+  	<include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from company
+    where 
+    `name` LIKE concat('%',#{name}, '%')
+    ORDER BY `name` DESC
+    <if test="startIndex != null and pageSize !=null">
+      limit #{startIndex},#{pageSize}
+    </if>
+  </select>
+  
+  <!-- 默认查询几个 -->
+  <select id="selectList" parameterType="map" resultMap="ResultMapWithBLOBs"  >
+  	select
+  	<include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from company
+    ORDER BY `name` DESC
+    limit #{startIndex},#{pageSize}
+  </select>
+  
+  <!-- 根据用户id查询所属团队 -->
+  <select id="selectByUserId" parameterType="int" resultMap="ResultMapWithBLOBs" >
+  	select
+  	<include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from company
+    where responser_id = #{userId}
+  </select>
+  
+  <!-- 获取团队汇总 -->
+  <select id="selectCollect" parameterType="int" resultMap="Result0" >
+  	select r1.maintain_ing_count,r2.maintain_month_count,r3.maintain_sum_count,r11.fault_ing_count,r22.fault_month_count,r33.fault_sum_count
+	FROM (
+	select COUNT(fi.id) maintain_ing_count 
+	from fault_info fi INNER JOIN service_type st ON fi.service_type_id = st.id
+	WHERE 
+		st.maintain_user_mobile IN (SELECT phone FROM `user` WHERE company_id = #{companyId})
+	AND fi.state &lt; 7 
+	) r1,
+	(
+	select COUNT(fi.id) maintain_month_count 
+	from fault_info fi INNER JOIN service_type st ON fi.service_type_id = st.id
+	WHERE 
+		st.maintain_user_mobile IN (SELECT phone FROM `user` WHERE company_id = #{companyId}) 
+		AND fi.createtime LIKE CONCAT(DATE_FORMAT(SYSDATE(),'%Y-%m'),'%') 
+	) r2,
+	(
+	select COUNT(fi.id) maintain_sum_count 
+	from fault_info fi INNER JOIN service_type st ON fi.service_type_id = st.id
+	WHERE 
+		st.maintain_user_mobile IN (SELECT phone FROM `user` WHERE company_id = #{companyId})
+	) r3,
+	(
+	select COUNT(fi.id) fault_ing_count 
+	from fault_info fi
+	WHERE fi.company_id = #{companyId} AND fi.state &lt; 7 
+	) r11,
+	(
+	select COUNT(fi.id) fault_month_count 
+	from fault_info fi
+	WHERE fi.company_id = #{companyId} AND fi.createtime LIKE CONCAT(DATE_FORMAT(SYSDATE(),'%Y-%m'),'%') 
+	) r22,
+	(
+	select COUNT(fi.id) fault_sum_count 
+	from fault_info fi 
+	WHERE fi.company_id = #{companyId} 
+	) r33
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from company
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.Company">
+    insert into company (id, name, short_name, 
+      state, telephone, province, 
+      city, area, address, 
+      lng, lat, head_pic, 
+      responser_id, responser_name, responser_phone, 
+      createtime, three_certificates, check_state, 
+      updatetime, is_del, content
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{shortName,jdbcType=VARCHAR}, 
+      #{state,jdbcType=INTEGER}, #{telephone,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{city,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{lng,jdbcType=VARCHAR}, #{lat,jdbcType=VARCHAR}, #{headPic,jdbcType=VARCHAR}, 
+      #{responserId,jdbcType=INTEGER}, #{responserName,jdbcType=VARCHAR}, #{responserPhone,jdbcType=VARCHAR}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{threeCertificates,jdbcType=VARCHAR}, #{checkState,jdbcType=INTEGER}, 
+      #{updatetime,jdbcType=TIMESTAMP}, #{isDel,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.Company" keyProperty="id">
+    insert into company
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="shortName != null">
+        short_name,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="telephone != null">
+        telephone,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="lng != null">
+        lng,
+      </if>
+      <if test="lat != null">
+        lat,
+      </if>
+      <if test="headPic != null">
+        head_pic,
+      </if>
+      <if test="responserId != null">
+        responser_id,
+      </if>
+      <if test="responserName != null">
+        responser_name,
+      </if>
+      <if test="responserPhone != null">
+        responser_phone,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+      <if test="threeCertificates != null">
+        three_certificates,
+      </if>
+      <if test="checkState != null">
+        check_state,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="shortName != null">
+        #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="telephone != null">
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="lng != null">
+        #{lng,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="headPic != null">
+        #{headPic,jdbcType=VARCHAR},
+      </if>
+      <if test="responserId != null">
+        #{responserId,jdbcType=INTEGER},
+      </if>
+      <if test="responserName != null">
+        #{responserName,jdbcType=VARCHAR},
+      </if>
+      <if test="responserPhone != null">
+        #{responserPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="threeCertificates != null">
+        #{threeCertificates,jdbcType=VARCHAR},
+      </if>
+      <if test="checkState != null">
+        #{checkState,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+    <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+        SELECT LAST_INSERT_ID() AS id
+    </selectKey>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.Company">
+    update company
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="shortName != null">
+        short_name = #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="telephone != null">
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="lng != null">
+        lng = #{lng,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        lat = #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="headPic != null">
+        head_pic = #{headPic,jdbcType=VARCHAR},
+      </if>
+      <if test="responserId != null">
+        responser_id = #{responserId,jdbcType=INTEGER},
+      </if>
+      <if test="responserName != null">
+        responser_name = #{responserName,jdbcType=VARCHAR},
+      </if>
+      <if test="responserPhone != null">
+        responser_phone = #{responserPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="threeCertificates != null">
+        three_certificates = #{threeCertificates,jdbcType=VARCHAR},
+      </if>
+      <if test="checkState != null">
+        check_state = #{checkState,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xmsmartcity.maintain.pojo.Company">
+    update company
+    set name = #{name,jdbcType=VARCHAR},
+      short_name = #{shortName,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      lng = #{lng,jdbcType=VARCHAR},
+      lat = #{lat,jdbcType=VARCHAR},
+      head_pic = #{headPic,jdbcType=VARCHAR},
+      responser_id = #{responserId,jdbcType=INTEGER},
+      responser_name = #{responserName,jdbcType=VARCHAR},
+      responser_phone = #{responserPhone,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      three_certificates = #{threeCertificates,jdbcType=VARCHAR},
+      check_state = #{checkState,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      is_del = #{isDel,jdbcType=INTEGER},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.Company">
+    update company
+    set name = #{name,jdbcType=VARCHAR},
+      short_name = #{shortName,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      lng = #{lng,jdbcType=VARCHAR},
+      lat = #{lat,jdbcType=VARCHAR},
+      head_pic = #{headPic,jdbcType=VARCHAR},
+      responser_id = #{responserId,jdbcType=INTEGER},
+      responser_name = #{responserName,jdbcType=VARCHAR},
+      responser_phone = #{responserPhone,jdbcType=VARCHAR},
+      createtime = #{createtime,jdbcType=TIMESTAMP},
+      three_certificates = #{threeCertificates,jdbcType=VARCHAR},
+      check_state = #{checkState,jdbcType=INTEGER},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      is_del = #{isDel,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="findNoDel" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" /> 
+    from company 
+    where id=#{id,jdbcType=INTEGER} and is_del=0
+  </select>
+  
+  <select id="queryForCompanyPage" parameterType="map" resultMap="ResultMapWithBLOBs">
+    select c.* from company c
+    where c.is_del=0 
+    <if test="record.name != null">
+      and name like concat('%',#{record.name,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="record.state != null">
+       and state = #{record.state,jdbcType=INTEGER}
+    </if>
+    <if test="record.checkState != null">
+      and  check_state = #{record.checkState,jdbcType=INTEGER},
+    </if>
+    <if test="record.responserName != null">
+     and responser_name like concat('%',#{record.responserName,jdbcType=VARCHAR},'%')
+     </if>
+     <if test="record.responserPhone != null">
+      and  responser_phone like concat('%', #{record.responserPhone,jdbcType=VARCHAR},'%')
+      </if>
+      order by c.id desc
+      <if test="startIndex !=null and pageSize !=null">
+      	limit #{startIndex},#{pageSize}
+      </if>
+  </select>
+  
+  <!-- 根据名称获取公司 -->
+  <select id="selectCompanyByName" parameterType="map" resultMap="ResultMapWithBLOBs"  >
+  	select 
+    	<include refid="Base_Column_List" />,
+    	<include refid="Blob_Column_List" />
+    from company
+    where name = #{name}
+    limit 0,1
+  </select>
+  
+  <!-- 根据名称搜索返回分页对象 -->
+  <select id="selectListByCompanyName" parameterType="map" resultMap="ResultMapWithBLOBs"  >
+  	select
+  	<include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from company
+    where 
+    `name` LIKE concat('%',#{name}, '%')
+    ORDER BY `name` DESC
+  </select>
+</mapper>

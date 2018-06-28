@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.WorkOrderMapper">
+  <resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.WorkOrder">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="fault_info_id" jdbcType="INTEGER" property="faultInfoId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="introduce" jdbcType="VARCHAR" property="introduce" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="material_price" jdbcType="DECIMAL" property="materialPrice" />
+    <result column="labour_price" jdbcType="DECIMAL" property="labourPrice" />
+    <result column="other_price" jdbcType="DECIMAL" property="otherPrice" />
+    <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
+    <result column="pics" jdbcType="VARCHAR" property="pics" />
+    <result column="is_need_confirm" jdbcType="BIT" property="isNeedConfirm" />
+    <result column="is_under_warranty" jdbcType="BIT" property="isUnderWarranty" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, fault_info_id, user_id, introduce, reason, remark, material_price, labour_price, 
+    other_price, total_price, pics, is_need_confirm, is_under_warranty, updatetime, createtime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from work_order
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 查询报障单相关工单信息 -->
+  <select id="selectByFaultInfoId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from work_order
+    where fault_info_id = #{faultInfoId,jdbcType=INTEGER}
+    limit 0,1
+  </select>
+  
+  <select id="selectMapByFaultInfoId" parameterType="java.lang.Integer" resultType="map" >
+    select 
+    	 wo.id, wo.fault_info_id, wo.introduce, wo.reason, wo.remark, wo.material_price, wo.labour_price, wo.other_price, 
+   		 wo.total_price, wo.pics, wo.is_need_confirm, wo.is_under_warranty, wo.updatetime,u.`name` user_name,wo.createtime,
+   		 p.`name` project_name,st.`name` service_type_name,fi.service_type_id
+	from work_order wo INNER JOIN fault_info fi ON wo.fault_info_id = fi.id
+	INNER JOIN project p on fi.project_id = p.id
+	INNER JOIN service_type st on st.id = fi.service_type_id
+	INNER JOIN `user` u ON wo.user_id = u.id
+    where wo.fault_info_id = #{faultInfoId,jdbcType=INTEGER}
+    limit 0,1
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from work_order
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xmsmartcity.maintain.pojo.WorkOrder">
+    insert into work_order (id, fault_info_id, user_id, 
+      introduce, reason, remark, 
+      material_price, labour_price, other_price, 
+      total_price, pics, is_need_confirm, 
+      is_under_warranty, updatetime, createtime
+      )
+    values (#{id,jdbcType=INTEGER}, #{faultInfoId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{introduce,jdbcType=VARCHAR}, #{reason,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{materialPrice,jdbcType=DECIMAL}, #{labourPrice,jdbcType=DECIMAL}, #{otherPrice,jdbcType=DECIMAL}, 
+      #{totalPrice,jdbcType=DECIMAL}, #{pics,jdbcType=VARCHAR}, #{isNeedConfirm,jdbcType=BIT}, 
+      #{isUnderWarranty,jdbcType=BIT}, #{updatetime,jdbcType=TIMESTAMP}, #{createtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xmsmartcity.maintain.pojo.WorkOrder">
+    insert into work_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="faultInfoId != null">
+        fault_info_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="introduce != null">
+        introduce,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="materialPrice != null">
+        material_price,
+      </if>
+      <if test="labourPrice != null">
+        labour_price,
+      </if>
+      <if test="otherPrice != null">
+        other_price,
+      </if>
+      <if test="totalPrice != null">
+        total_price,
+      </if>
+      <if test="pics != null">
+        pics,
+      </if>
+      <if test="isNeedConfirm != null">
+        is_need_confirm,
+      </if>
+      <if test="isUnderWarranty != null">
+        is_under_warranty,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="createtime != null">
+        createtime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="faultInfoId != null">
+        #{faultInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="introduce != null">
+        #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="materialPrice != null">
+        #{materialPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="labourPrice != null">
+        #{labourPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="otherPrice != null">
+        #{otherPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="totalPrice != null">
+        #{totalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="pics != null">
+        #{pics,jdbcType=VARCHAR},
+      </if>
+      <if test="isNeedConfirm != null">
+        #{isNeedConfirm,jdbcType=BIT},
+      </if>
+      <if test="isUnderWarranty != null">
+        #{isUnderWarranty,jdbcType=BIT},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xmsmartcity.maintain.pojo.WorkOrder">
+    update work_order
+    <set>
+      <if test="faultInfoId != null">
+        fault_info_id = #{faultInfoId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="introduce != null">
+        introduce = #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="materialPrice != null">
+        material_price = #{materialPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="labourPrice != null">
+        labour_price = #{labourPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="otherPrice != null">
+        other_price = #{otherPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="totalPrice != null">
+        total_price = #{totalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="pics != null">
+        pics = #{pics,jdbcType=VARCHAR},
+      </if>
+      <if test="isNeedConfirm != null">
+        is_need_confirm = #{isNeedConfirm,jdbcType=BIT},
+      </if>
+      <if test="isUnderWarranty != null">
+        is_under_warranty = #{isUnderWarranty,jdbcType=BIT},
+      </if>
+      <if test="createtime != null">
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xmsmartcity.maintain.pojo.WorkOrder">
+    update work_order
+    set fault_info_id = #{faultInfoId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      introduce = #{introduce,jdbcType=VARCHAR},
+      reason = #{reason,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      material_price = #{materialPrice,jdbcType=DECIMAL},
+      labour_price = #{labourPrice,jdbcType=DECIMAL},
+      other_price = #{otherPrice,jdbcType=DECIMAL},
+      total_price = #{totalPrice,jdbcType=DECIMAL},
+      pics = #{pics,jdbcType=VARCHAR},
+      is_need_confirm = #{isNeedConfirm,jdbcType=BIT},
+      is_under_warranty = #{isUnderWarranty,jdbcType=BIT},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      createtime = #{createtime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans      
+                        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd      
+                        http://www.springframework.org/schema/context      
+                        http://www.springframework.org/schema/context/spring-context-4.2.xsd      
+                        http://www.springframework.org/schema/mvc      
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd  
+                        http://www.springframework.org/schema/cache   
+                        http://www.springframework.org/schema/cache/spring-cache-4.2.xsd">
+
+	<bean id="jobFactory" class="com.xmsmartcity.maintain.common.SchedJobFactory"></bean>
+
+	<!--quartz 任务调度配置 start -->
+	<bean name="MyScheduler"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="schedulerContextAsMap">
+			<map>
+				<!-- spring 管理的service需要放到这里，才能够注入成功 -->
+				<entry key="patrolSchemeRecordImpl" value-ref="patrolSchemeRecordImpl" />
+				<entry key="patrolSchemeImpl" value-ref="patrolSchemeImpl" />
+				<entry key="messageServiceImpl" value-ref="messageServiceImpl" />
+				<entry key="patrolSchemeRecordImpl" value-ref="patrolSchemeRecordImpl" />
+				<entry key="schedulerService" value-ref="schedulerService" />
+			</map>
+		</property>
+		<property name="jobFactory" ref="jobFactory"></property>
+		<property name="applicationContextSchedulerContextKey" value="applicationContextKey" />
+		<property name="configLocation" value="classpath:quartz.properties" />
+	</bean>
+
+	<!-- jobDetail (新增巡检时的JOB) -->
+	<bean id="patrolJobDetail"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.xmsmartcity.maintain.controller.quartzjob.PatrolQuartzJobBean" />
+		<property name="durability" value="true" /> <!-- Jobs added with no trigger must be durable -->
+	</bean>
+
+	<!-- remindPatrolJobDetail (提醒巡检任务JOB) -->
+	<bean id="remindPatrolJobDetail"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.xmsmartcity.maintain.controller.quartzjob.RemindPatrolJobBean" />
+		<property name="durability" value="true" />
+	</bean>
+	
+	<!-- missingPatrolJobDetail (漏巡检提醒) -->
+	<bean id="missingPatrolJobDetail"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.xmsmartcity.maintain.controller.quartzjob.MissingPatrolJobBean" />
+		<property name="durability" value="true" />
+	</bean>
+	<!--quartz 任务调度配置 end -->
+</beans>    

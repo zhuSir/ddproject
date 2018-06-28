@@ -1,0 +1,19 @@
+.content{
+	float: left;
+	height: auto;
+	width: 100%;
+}
+.content .question{
+	height: 50px;
+	background: #F1F1F1;
+	width: 100%;
+}
+.content .question p{
+	color: #999999;
+	line-height: 50px;
+	margin-left: 15px;
+	font-size: 17px;
+}
+.content .xia .u2{
+	margin-top: 12px;
+}

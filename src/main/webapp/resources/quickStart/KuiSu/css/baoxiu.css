@@ -1,0 +1,210 @@
+.content{
+	width: 100%;
+	height: auto;
+}
+.content .pt{
+	font-size: 20px;
+	color: #ff8100;
+	margin-left: 15px;
+}
+.pp{
+	text-align: center;
+	line-height: 18px;
+	font-size: 18px;
+	color: #000000;
+	margin-left: 15px;
+	
+}
+.line{
+	width: 100%;
+	height: 10px;
+	background: #F1F1F1;
+	float: left;
+	margin-top: 61%;
+}
+.vs{
+	margin-top: 93px;
+}
+.content .first{
+	width: 187px;
+	height: 64px;
+	background: url(../img/baoxiu/1-rectangle-1.png);
+	background-size: 187px 64px;
+	margin-top: 35%;
+	margin-left: 23%;
+	float: left;
+}
+.next{
+	width: auto;
+	height: auto;
+	margin-top: 9%;
+	margin-left: 36px;
+	float: left;
+}
+.next .bax{
+	width: 54px;
+	height: 90px;
+	float: left;
+	margin-top: 8%;
+}
+.next .bx{
+	width: 63%;
+	height: 22%;
+	float: left;
+}
+.next .bqx{
+	float: left;
+	width: 67px;
+	height: 108px;
+	}
+.next .im2{
+	width: 203px;
+	height: 144px;
+	margin-left: 28px;
+}
+.Top{
+	height: 62px;
+	width: 52px;
+	position: fixed;
+	top: 88%;
+	left: 81%;
+	cursor: pointer;
+	display: none;
+}
+.Top img{
+	width: 15px;
+	height: 33px;
+	margin-left: 18px;
+}
+.Top p{
+	font-size: 13px;
+	text-align: center;
+	color: #FF8100;
+	margin-top: 8px;
+}
+.second{
+	width: 220px;
+	height: 64px;
+	background: url(../img/baoxiu/1-rectangle-2.png);
+	background-size: 220px 64px;
+	margin-top: 43%;
+	margin-left: 19%;
+	float: left;
+}
+.next .im3{
+	width: 63%;
+	height: 28%;
+	float: left;
+	margin-left: 28px;
+}
+.third{
+	width: 275px;
+	height: 64px;
+	background: url(../img/baoxiu/1-rectangle-3.png);
+	background-size: 275px 64px;
+	margin-top: 39%;
+	margin-left: 8%;
+	float: left;
+}
+.next .im4{
+	float: left;
+	width: 61%;
+	height: 31%;
+	margin-left: 28px;
+}
+.tix{
+	width: 85%;
+	height: 64px;
+	background: url(../img/baoxiu/1-rectangle-4.png);
+	background-size: 100% 64px;
+	margin-top: 21%;
+	margin-left: 8%;
+	float: left;
+}
+.tix .pp{
+	margin-left: 0px;
+	line-height: 14px;
+}
+.clative{
+	margin-left: 20%;
+}
+.next .bv{
+	margin-top: 0px;
+	margin-left: 2%;
+	width: 61px;
+	height: 104px;
+}
+.next .im5{
+	width: 37%;
+	height: 36%;
+	margin-left: 26%;
+}
+.jie{
+	float: left;
+	margin-top: 46px;
+}
+.jie p{
+	text-align: center;
+	margin-left: 42px;
+	margin-right: 20px;
+}
+}
+.yuan{
+	float: left;
+	margin-top: 35px;
+}
+.yuan img{
+	width: 40.5%;
+	height: 50%;
+	margin-left: 30%;
+	float: left;
+	margin-top: 10%;
+}
+.last{
+	width: 76%;
+	height: 64px;
+	background: url(../img/baoxiu/1-rectangle-5.png);
+	background-size: 100% 64px;
+	margin-top: 20%;
+	margin-left: 10%;
+	float: left;
+}
+.last .pp{
+	margin-left: 0px;
+	line-height: 14px;
+}
+.next .im6{
+	width:63%;
+	height: 40%;
+	margin-left: 28px;
+}
+.weix{
+	margin-top: 50%;
+	float: left;
+}
+.weix .im8{
+	width: 71%;
+	height: 23%;
+	margin-left: 16%;
+}
+.pq{
+	margin-top: 28px;
+	float: left;
+	margin-left: 23%;
+	margin-right: 21%;
+	padding-bottom: 16%;
+}
+.zuih{
+	margin-top: 25px;
+	float: left;
+	margin-left: 10%;
+	margin-right: 10%;
+	padding-bottom: 66%;
+}
+.zuih p{
+	line-height: 25px;
+}
+@media screen and (max-width: 320px)  {
+	.next .im2{
+		margin-left: 10px;
+}

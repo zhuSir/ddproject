@@ -1,0 +1,32 @@
+.content{
+	width: 100%;
+	height: auto;
+	float: left;
+}
+.content .p1{
+	text-align: center;
+	margin-top: 18px;
+	color: #000000;
+	font-size: 13px;
+	font-weight: bold;
+}
+.content .p2{
+	margin-left: 15px;
+	font-size: 13px;
+	color: #666666;
+	margin-right: 15px;
+	line-height: 25px;
+}
+.content .cc{
+	margin-top: 18px;
+}
+.content .bb{
+	margin-top: -10px;
+}
+.content .bn{
+	margin-top: 20px;
+}
+.content .suo{
+	text-indent: 1em;
+}
+

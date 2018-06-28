@@ -1,0 +1,204 @@
+body{
+	background: #F1F1F1;
+}
+body p,span ,button{
+	font-size: 18px;
+	font-family: "微软雅黑";
+}
+.ovfHiden{
+	overflow: hidden;
+	height: 100%;
+}
+.main{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+}
+.main .content{
+	width: 100%;
+	height: 100%;
+	float: left;
+}
+.main .top{
+	width: 100%;
+	height: 60px;
+	float: left;
+	margin-top: 0px;
+	margin-left: 0px;
+	border-bottom: 1px solid #CCCCCC;
+	background: white;
+}
+.main span{
+	float: left;
+	line-height: 60px;
+	margin-left: 15px;
+	color: #666666;
+}
+.main  input{
+	width: 57%;
+	height: 20px;
+	outline: none;
+	margin-top: 18px;
+	font-size: 18px;
+	float: left;
+	color: #000000;
+	border: none;
+}
+.main #demo1{
+	width: 75%;
+}
+.area_ctrl{
+	margin-bottom: 46px;
+	position: absolute;
+}
+.main .im2{
+	width: 10px;
+	height: 18px;
+	float: right;
+	margin-top: 22px;
+}
+.main .top .im2{
+	margin-right: 3%;
+}
+.main .explain{
+	float: left;
+	width: 100%;
+	height: auto;
+	background: white;
+}
+.main .explain textarea{
+	outline: none;
+	width: 90%;
+	height: 108px;
+	margin-left: 4%;
+	resize: none;
+	border: none;
+	border-bottom: 1px solid #CCCCCC;
+	font-size: 18px;
+	margin-top: -5px;
+}
+.main .picture{
+	width: 100%;
+	height: 180px;
+	float: left;
+	border-bottom: 1px solid #CCCCCC;
+	background: white;
+}
+.main .picture .upda{
+	width: 100%;
+	height: auto;
+	float: left;
+	margin-top: -4px;
+}
+.picture .upda ul{
+	margin-left: -23px;
+	width: auto;
+	float: left;
+	margin-top: 0px;
+}
+.picture .upda ul li{
+	width: 90px;
+	height: 90px;
+	border: 1px solid #CCCCCC;
+	list-style: none;
+	float: left;
+	border-radius: 4px;
+}
+.upda ul li .camera{
+	margin-top: 36%;
+	margin-left: 30%;
+	cursor: pointer;
+	width: 28px;
+	height: 23px;
+}
+.upda ul .sp{
+	margin-top: 13px;
+	float: left;
+}
+.main .tpp{
+	border-bottom: none;
+}
+.main .tpp .status{
+	float: right;
+	margin-right: 4%;
+	width: 195px;
+	height: 37px;
+	border-radius: 3px;
+	margin-top: 11px;
+}
+.tpp .status button{
+	outline: none;
+	background: white;
+	border: 1px solid #CCCCCC;
+	width:65px;
+	height: 37px;
+	float: left;
+	font-size: 18px;
+}
+.tpp .status .bt1{
+	color: #23A8EE;
+	border-radius: 3px 0 0 3px;
+}
+.tpp .status .bt2{
+	color: #FF8100;
+	border-left: none;
+}
+.tpp .status .bt3{
+	color: #F72828;
+	border-left: none;
+	border-radius: 0 3px 3px 0;
+}
+.tb{
+	width: 100%;
+	margin-top: 10px;
+	height: auto;
+	background: white;
+	float: left;
+}
+.tb ul{
+	width: auto;
+	height: auto;
+	margin-left: -39px;
+	margin-right: 15px;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.tb ul li{
+	height: 62px;
+	width:95%;
+	margin-left: 15px;
+	list-style: none;
+	border-bottom: 1px solid #CCCCCC;
+}
+.tb ul :last-child{
+	border-bottom: none;
+}
+.tb ul li span{
+	margin-left: 0px;
+}
+.main footer{
+	width: 100%;
+	height: 45px;
+	position: fixed;
+	z-index: 999;
+	background: #ff8100;
+	bottom: 0px;
+}
+.main footer p{
+	text-align: center;
+	line-height: 13px;
+}
+.main footer p a{
+	color: white;
+	text-decoration: none;
+}
+.area_ctrl{
+	bottom: 46px;
+}
+@media screen and (max-width: 320px) {
+	ul li:last-child{
+		margin-bottom: 40px;
+	}
+}

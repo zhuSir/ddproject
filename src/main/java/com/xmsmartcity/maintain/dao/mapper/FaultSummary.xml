@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xmsmartcity.maintain.dao.FaultSummaryMapper">
+	<resultMap id="BaseResultMap" type="com.xmsmartcity.maintain.pojo.FaultSummary">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="user_id" jdbcType="INTEGER" property="userId" />
+		<result column="fault_info_id" jdbcType="INTEGER" property="faultInfoId" />
+		<result column="project_id" jdbcType="INTEGER" property="projectId" />
+	</resultMap>
+	<select id="selectFaultList" parameterType="map" resultMap="BaseResultMap">
+		SELECT p.`name` as projectName,p.id as projectId
+		<if test="type==0">
+			,COUNT(fi.id) as faultSum
+			,SUM(fi.total_price) as paySum
+		</if>
+		<if test="type==1">
+			,COUNT(fi.id) as maintenanSum
+			,SUM(fi.total_price) as incomeSum
+		</if>
+		FROM project p
+		LEFT JOIN project_user pu on pu.project_id=p.id and pu.is_del=0 AND pu.is_leader=1
+		LEFT JOIN `user` cu on cu.id=pu.user_id and cu.is_del=0
+		LEFT JOIN company c on c.id =cu.company_id and c.is_del=0
+		LEFT JOIN `user` u on u.company_id=c.id and u.is_del=0
+		LEFT JOIN 
+		( #查询报障单数量和每个报障单的总金额
+		SELECT DISTINCT f.id,w.total_price as total_price,f.project_id
+		FROM fault_info f
+		LEFT JOIN work_order w on w.fault_info_id=f.id
+		LEFT JOIN index_user_fault i on i.fault_info_id=f.id and i.is_del=0
+		<if test="type==0">
+			LEFT JOIN project_user pu on pu.project_id=f.project_id and
+			pu.is_leader=1 and pu.is_del=0 and pu.type=0 #查询项目负责人
+			LEFT JOIN `user` uc on uc.phone=f.fault_user_mobile and uc.is_del=0
+			LEFT JOIN company c on uc.company_id=c.id and c.is_del=0 #查询团队负责人
+			LEFT JOIN `user` u on (u.id=c.responser_id or u.id=pu.user_id or
+			f.fault_user_mobile=u.phone)
+		</if>
+		<if test="type==1">
+			LEFT JOIN service_type s on s.id=f.service_type_id and s.is_del=0
+			#查询项目服务负责人
+			LEFT JOIN `user` uc on uc.phone=s.maintain_user_mobile and uc.is_del=0
+			LEFT JOIN company c on c.id=uc.company_id and uc.is_del=0 #查询团队负责人
+			LEFT JOIN `user` u ON (i.user_id=u.id or
+			s.maintain_user_mobile=u.phone or c.responser_id=u.id) AND u.is_del =
+			0
+		</if>
+		WHERE u.id=#{userId,jdbcType=INTEGER}
+		<if test="startTime!=null and endTime!=null">
+			and f.createtime between #{startTime,jdbcType=TIMESTAMP} and
+			date_add(#{endTime,jdbcType=TIMESTAMP},INTERVAL 1 day)
+		</if>
+		GROUP BY f.id
+		) fi on p.id=fi.project_id
+		WHERE u.id=#{userId,jdbcType=INTEGER} 
+		<if test="startTime!=null and endTime!=null">
+			and p.createtime &lt; date_add(#{endTime,jdbcType=TIMESTAMP},INTERVAL 1 day)
+		</if>
+		GROUP BY p.id
+		ORDER BY COUNT(fi.id) DESC
+	</select>
+
+	<!-- 人员汇总 -->
+	<select id="selectStatisticsByUser" parameterType="map" resultMap="BaseResultMap">
+		SELECT u.`name` as userName,u.id as userId,u.head_pic as userPic
+		<if test="type==0">
+			,COUNT(fi.id) as faultSum
+			,SUM(fi.total_price) as paySum
+		</if>
+		<if test="type==1">
+			,COUNT(fi.id) as maintenanSum
+			,SUM(fi.total_price) as incomeSum
+		</if>
+		FROM ( #查询报障单数量和每个报障单的总金额
+		SELECT DISTINCT f.id,w.total_price as total_price,f.project_id,u.id as indexUserId,us.id as mainUserId
+		FROM fault_info f
+		LEFT JOIN work_order w on w.fault_info_id=f.id
+		LEFT JOIN index_user_fault i on i.fault_info_id=f.id and i.is_del=0
+		LEFT JOIN service_type s on s.id=f.service_type_id and s.is_del=0
+		LEFT JOIN `user` us on s.maintain_user_mobile=us.phone and us.is_del=0
+		<if test="type==0">
+		LEFT JOIN `user` u on f.fault_user_mobile=u.phone and u.is_del=0
+		LEFT JOIN company c on u.company_id=c.id and c.is_del=0 #查询团队负责人
+		</if>
+		<if test="type==1">
+		LEFT JOIN company c on c.id=us.company_id and c.is_del=0 #查询团队负责人
+		LEFT JOIN `user` u ON i.user_id=u.id AND u.is_del=0
+		</if>
+		WHERE c.responser_id=#{userId,jdbcType=INTEGER}
+		<if test="startTime!=null and endTime!=null">
+			and f.createtime between #{startTime,jdbcType=TIMESTAMP} and
+			date_add(#{endTime,jdbcType=TIMESTAMP},INTERVAL 1 day)
+		</if>
+		GROUP BY f.id
+		) fi
+		RIGHT JOIN `user` u on (u.id=fi.indexUserId or fi.mainUserId=u.id)
+		WHERE (u.id=fi.indexUserId or fi.mainUserId=u.id) is not NULL
+		<if test="startTime!=null and endTime!=null">
+			and u.join_time &lt; date_add(#{endTime,jdbcType=TIMESTAMP},INTERVAL 1 day)
+		</if>
+		GROUP BY u.id
+		ORDER BY COUNT(fi.id) DESC
+	</select>
+
+	<select id="selectSummaryNum" parameterType="map" resultType="map">
+		SELECT
+		COUNT(t.id) AS sumNum,
+		CASE WHEN SUM(CASE WHEN t.state
+		IN(1,2,3,4,5,6,7) THEN 1 ELSE 0 END) is NULL THEN 0 ELSE SUM(CASE WHEN
+		t.state IN(1,2,3,4,5,6,7) THEN 1 ELSE 0 END) END as processingNum,
+		IFNULL(SUM(CASE when
+		DATE_FORMAT(t.createtime,'%Y%m')=DATE_FORMAT(CURDATE(),'%Y%m') THEN 1
+		ELSE 0 END),0) as currentMonthNum,
+		CASE WHEN SUM(t.total_price) is NULL
+		THEN 0 ELSE SUM(t.total_price) END as sumIncome,
+		IFNULL(SUM(CASE WHEN
+		DATE_FORMAT(t.createtime,'%Y%m')=DATE_FORMAT(CURDATE(),'%Y%m') THEN
+		t.total_price ELSE 0 END),0) as currrntMonthIncome
+		FROM
+		(SELECT DISTINCT
+		f.id,f.state, f.createtime,w.total_price as
+		total_price
+		FROM fault_info f
+		left join index_user_fault i on
+		i.fault_info_id=f.id and i.is_del=0
+		LEFT join work_order w ON
+		w.fault_info_id=f.id
+		<!-- 维保方 -->
+		<if test="type ==1">
+			LEFT JOIN service_type s on s.id=f.service_type_id and
+			s.is_del=0 #查询项目服务负责人
+			LEFT JOIN `user` uc on
+			uc.phone=s.maintain_user_mobile and uc.is_del=0
+			LEFT JOIN company c on c.id=uc.company_id and uc.is_del=0 #查询团队负责人
+			LEFT
+			JOIN `user` u ON (i.user_id=u.id or s.maintain_user_mobile=u.phone or
+			c.responser_id=u.id) AND u.is_del = 0
+		</if>
+		<!-- 报障方 -->
+		<if test="type==2">
+			LEFT JOIN project_user pu on pu.project_id=f.project_id
+			AND pu.is_leader=1 and pu.is_del=0 and pu.type=0 #查询项目负责人
+			LEFT JOIN
+			`user` uc on uc.id=pu.user_id and uc.is_del=0
+			LEFT JOIN company c on
+			uc.company_id=c.id and c.is_del=0 #查询团队负责人
+			LEFT JOIN `user` u on
+			(u.id=c.responser_id or u.id=pu.user_id or
+			f.fault_user_mobile=u.phone)
+		</if>
+		where f.is_del=0 and u.id=#{userId,jdbcType=INTEGER}
+		GROUP BY f.id) t
+	</select>
+
+	<!-- 首页未完成报障 甲方 -->
+	<select id="selectFaultSummaryNum" parameterType="map" resultType="map">
+		<choose>
+			<when test="companyId != null">
+				<!-- 乙方 团队负责人 -->
+				SELECT res2.fault_num,res4.month_fault_num,res6.fault_sum
+				FROM(
+				select COUNT(DISTINCT f.id) fault_num 
+				FROM fault_info f
+				INNER JOIN project_user pu ON pu.project_id = f.project_id and pu.is_del = 0 and pu.type = 0
+				LEFT JOIN `user` u on u.id=pu.user_id AND u.is_del=0
+				LEFT JOIN `user` fu on fu.id=f.user_id and fu.is_del=0
+				WHERE (u.company_id=#{companyId} OR fu.company_id=#{companyId}) AND f.state &lt; 9 and f.is_del = 0 
+				)res2,
+				(
+				select COUNT(DISTINCT f.id) month_fault_num 
+				FROM fault_info f
+				INNER JOIN project_user pu ON pu.project_id = f.project_id and pu.is_del = 0 and pu.type = 0
+				LEFT JOIN `user` u on u.id=pu.user_id AND u.is_del=0
+				LEFT JOIN `user` fu on fu.id=f.user_id and fu.is_del=0
+				WHERE (u.company_id=#{companyId} OR fu.company_id=#{companyId})  AND f.createtime LIKE CONCAT(DATE_FORMAT(SYSDATE(),'%Y-%m'),'%') and f.is_del = 0 
+				) res4,					
+				(
+				select COUNT(DISTINCT f.id) fault_sum 
+				FROM fault_info f
+				INNER JOIN project_user pu ON pu.project_id = f.project_id and pu.is_del = 0 and pu.type = 0
+				LEFT JOIN `user` u on u.id=pu.user_id AND u.is_del=0
+				LEFT JOIN `user` fu on fu.id=f.user_id and fu.is_del=0
+				WHERE (u.company_id=#{companyId} OR fu.company_id=#{companyId})  and f.is_del =0
+				) res6
+			</when>
+			<otherwise>
+			SELECT res2.fault_num,res4.month_fault_num,res6.fault_sum
+			FROM(
+			SELECT COUNT(DISTINCT f.id) fault_num 
+						FROM fault_info f
+						INNER JOIN project_user pu ON pu.project_id = f.project_id and pu.is_del = 0 and pu.type = 0 and pu.is_leader = 1
+						LEFT JOIN `user` u on f.fault_user_mobile = u.phone and u.is_del = 0
+						LEFT JOIN `user` uu ON f.user_id = uu.id AND uu.is_del = 0
+						WHERE
+						(u.id = #{userId} OR uu.id = #{userId} OR pu.user_id=#{userId}) AND f.state &lt; 9 and f.is_del = 0
+			)res2,
+			(
+			SELECT COUNT(DISTINCT f.id) month_fault_num 
+						FROM fault_info f
+						INNER JOIN project_user pu ON pu.project_id = f.project_id and pu.is_del = 0 and pu.type = 0 and pu.is_leader = 1
+						LEFT JOIN `user` u on f.fault_user_mobile = u.phone and u.is_del = 0
+						LEFT JOIN `user` uu ON f.user_id = uu.id AND uu.is_del = 0
+						WHERE
+						(u.id = #{userId} OR uu.id = #{userId} OR pu.user_id=#{userId}) AND f.createtime LIKE CONCAT(DATE_FORMAT(SYSDATE(),'%Y-%m'),'%') and f.is_del = 0 
+			)res4,
+			(
+			SELECT COUNT(DISTINCT f.id) fault_sum 
+						FROM fault_info f
+						INNER JOIN project_user pu ON pu.project_id = f.project_id and pu.is_del = 0 and pu.type = 0 and pu.is_leader = 1
+						LEFT JOIN `user` u on f.fault_user_mobile = u.phone and u.is_del = 0
+						LEFT JOIN `user` uu ON f.user_id = uu.id AND uu.is_del = 0
+						WHERE
+						(u.id = #{userId} OR uu.id = #{userId} OR pu.user_id=#{userId}) and f.is_del = 0
+			)res6
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 首页未完成报障  乙方-->
+	<select id="selectMaintainSummaryNum" parameterType="map" resultType="map">
+		<choose>
+			<when test="companyId != null">
+				<!-- 乙方 团队负责人 -->
+				select res1.maintain_num,res3.month_maintain_num,res5.maintain_sum
+					FROM (
+					select COUNT(DISTINCT f.id) maintain_num 
+					FROM fault_info f
+					INNER JOIN project_user pu ON pu.project_id = f.project_id and pu.is_del = 0 and pu.type = 1
+					LEFT JOIN `user` u on u.id=pu.user_id AND u.is_del=0
+					WHERE u.company_id=#{companyId} AND f.state &lt; 9 and f.is_del = 0 )res1,
+					(
+					select COUNT(DISTINCT f.id) month_maintain_num 
+					FROM fault_info f
+					INNER JOIN project_user pu ON pu.project_id = f.project_id and pu.is_del = 0 and pu.type = 1
+					LEFT JOIN `user` u on u.id=pu.user_id AND u.is_del=0
+					WHERE u.company_id=#{companyId} and f.is_del = 0 AND f.createtime LIKE CONCAT(DATE_FORMAT(SYSDATE(),'%Y-%m'),'%')) res3,
+					(
+					select COUNT(DISTINCT f.id) maintain_sum 
+					FROM fault_info f
+					INNER JOIN project_user pu ON pu.project_id = f.project_id and pu.is_del = 0 and pu.type = 1
+					LEFT JOIN `user` u on u.id=pu.user_id AND u.is_del=0
+					WHERE u.company_id=#{companyId} and f.is_del = 0 )res5
+			</when>
+			<otherwise>
+			SELECT res1.maintain_num, res3.month_maintain_num,res5.maintain_sum
+			FROM (
+			select COUNT(DISTINCT f.id) maintain_num
+				from fault_info f
+				LEFT JOIN project_user pu on pu.project_id=f.project_id AND pu.is_del=0 AND pu.is_leader=1 and pu.type=1
+				LEFT JOIN `user` u on u.id=pu.user_id and u.is_del=0
+				LEFT JOIN index_user_fault iuf ON f.id = iuf.fault_info_id AND iuf.is_del = 0
+				WHERE 
+				(iuf.user_id = #{userId} OR u.id =#{userId})
+				AND f.state &lt; 9 and f.is_del = 0 )res1,
+			(
+			select COUNT(DISTINCT f.id) month_maintain_num
+				from fault_info f
+				LEFT JOIN project_user pu on pu.project_id=f.project_id AND pu.is_del=0 AND pu.is_leader=1 and pu.type=1
+				LEFT JOIN `user` u on u.id=pu.user_id and u.is_del=0
+				LEFT JOIN index_user_fault iuf ON f.id = iuf.fault_info_id AND iuf.is_del = 0
+				WHERE 
+				(iuf.user_id = #{userId} OR u.id =#{userId})
+				and f.is_del = 0 AND f.createtime LIKE CONCAT(DATE_FORMAT(SYSDATE(),'%Y-%m'),'%'))res3,
+			(
+			select COUNT(DISTINCT f.id) maintain_sum
+				from fault_info f
+				LEFT JOIN project_user pu on pu.project_id=f.project_id AND pu.is_del=0 AND pu.is_leader=1 and pu.type=1
+				LEFT JOIN `user` u on u.id=pu.user_id and u.is_del=0
+				LEFT JOIN index_user_fault iuf ON f.id = iuf.fault_info_id AND iuf.is_del = 0
+				WHERE 
+				(iuf.user_id = #{userId} OR u.id =#{userId})
+				and f.is_del = 0 )res5
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 当前用户关联的项目数 -->
+	<select id="selectProjectSummaryNum" parameterType="map" resultType="java.lang.Integer">
+		<choose>
+			<when test="companyId != null ">
+				SELECT
+					COUNT(res.id) project_num
+				FROM (
+					SELECT p.id
+					FROM project p
+					INNER JOIN project_user pu ON p.id = pu.project_id and pu.is_del = 0
+					INNER JOIN `user` u ON pu.user_id = u.id and u.is_del = 0
+					INNER JOIN company c ON u.company_id = c.id and c.is_del = 0
+					WHERE p.is_del = 0 and c.id = #{companyId}
+					GROUP BY p.id
+				)res
+			</when>
+			<otherwise>
+				SELECT
+					COUNT(res.id) project_num
+				FROM (
+					SELECT p.id
+					FROM project p
+					INNER JOIN project_user pu ON p.id = pu.project_id and pu.is_del = 0
+					INNER JOIN `user` u ON pu.user_id = u.id and u.is_del = 0
+					WHERE p.is_del = 0 and u.id = #{userId}
+					GROUP BY p.id
+				)res
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="excelByProjectId" parameterType="map" resultType="map">
+		SELECT DISTINCT f.*,IFNULL(w.total_price,0) as total_price,p.`name` as projectName,IFNULL(uf.name,"无此用户") as createName,IFNULL(iu.name,"无此用户") as indexUserName
+		,IFNULL((e.maintain_quality+e.res_speed)/2,"暂无评分") as avgScore
+		FROM fault_info f
+		LEFT JOIN work_order w on w.fault_info_id=f.id
+		LEFT JOIN index_user_fault i on i.fault_info_id=f.id and i.is_del=0
+		LEFT JOIN project p ON p.id=f.project_id and p.is_del=0
+		LEFT JOIN `user` uf on uf.id=f.user_id and uf.is_del=0
+		LEFT JOIN `user` iu on iu.id=i.user_id and iu.is_del=0
+		LEFT JOIN evaluate e on e.fault_info_id=f.id and e.is_del=0
+		<if test="type==0">
+		LEFT JOIN project_user pu on pu.project_id=f.project_id and pu.is_leader=1 and pu.is_del=0 and pu.type=0 #查询项目负责人
+		LEFT JOIN `user` uc on uc.phone=f.fault_user_mobile and uc.is_del=0
+		LEFT JOIN company c on uc.company_id=c.id and c.is_del=0 #查询团队负责人
+		LEFT JOIN `user` u on (u.id=c.responser_id or u.id=pu.user_id or f.fault_user_mobile=u.phone)
+		</if>
+		<if test="type==1">
+		LEFT JOIN service_type s on s.id=f.service_type_id and s.is_del=0 #查询项目服务负责人
+		LEFT JOIN `user` uc on uc.phone=s.maintain_user_mobile and uc.is_del=0
+		LEFT JOIN company c on c.id=uc.company_id and uc.is_del=0 #查询团队负责人
+		LEFT JOIN `user` u ON (i.user_id=u.id or s.maintain_user_mobile=u.phone or c.responser_id=u.id) AND u.is_del =0
+		</if>
+		WHERE u.id=#{userId,jdbcType=INTEGER}
+		<if test="projectId!=null">
+		 	and f.project_id=#{projectId,jdbcType=INTEGER}
+		</if>
+		<if test="startTime!=null and endTime!=null">
+			and f.createtime between #{startTime,jdbcType=TIMESTAMP} and
+			date_add(#{endTime,jdbcType=TIMESTAMP},INTERVAL 1 day)
+		</if>
+		GROUP BY f.id;
+	</select>
+	
+	<select id="excelByUserId" parameterType="map" resultType="map">
+	SELECT DISTINCT f.*,IFNULL(w.total_price,0) as total_price,p.`name` as projectName,IFNULL(cu.name,"无此用户") as createName,IFNULL(u.name,"暂无维修工程师") as indexUserName
+		,IFNULL((e.maintain_quality+e.res_speed)/2,"暂无评分") as avgScore
+		FROM fault_info f
+		LEFT JOIN work_order w on w.fault_info_id=f.id
+		LEFT JOIN index_user_fault i on i.fault_info_id=f.id and i.is_del=0
+		LEFT JOIN project p ON p.id=f.project_id and p.is_del=0
+		LEFT JOIN evaluate e on e.fault_info_id=f.id and e.is_del=0
+		LEFT JOIN service_type s on s.id=f.service_type_id and s.is_del=0
+		LEFT JOIN `user` us on s.maintain_user_mobile=us.phone and us.is_del=0
+		LEFT JOIN `user` cu on cu.id=f.user_id and cu.is_del=0
+		<if test="type==0">
+		LEFT JOIN `user` uf on f.fault_user_mobile=uf.phone and uf.is_del=0
+		LEFT JOIN company c on uf.company_id=c.id and c.is_del=0 #查询团队负责人
+		</if>
+		<if test="type==1">
+		LEFT JOIN company c on c.id=us.company_id and c.is_del=0 #查询团队负责人
+		</if>
+		LEFT JOIN `user` u ON i.user_id=u.id AND u.is_del=0
+		WHERE c.responser_id=#{userId,jdbcType=INTEGER}
+		<if test="startTime!=null and endTime!=null">
+			and f.createtime between #{startTime,jdbcType=TIMESTAMP} and
+			date_add(#{endTime,jdbcType=TIMESTAMP},INTERVAL 1 day)
+		</if>
+		GROUP BY f.id
+	</select>
+
+	<!--全局搜索 -->
+	<select id="searchOverallData" parameterType="map" resultType="map" >
+		SELECT ID,CONTENT,TYPE FROM ALL_DATA_FOR_SEARCH
+		WHERE user_id = #{userId}
+		AND CONTENT LIKE CONCAT("%",#{content},"%")
+		<if test="type != null and type != 0 ">
+			AND  TYPE  = #{type}
+		</if>
+
+	</select>
+</mapper>

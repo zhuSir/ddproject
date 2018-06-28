@@ -1,0 +1,120 @@
+body{
+	background: #f1f1f1;
+	font-size: 18px;
+	font-family: "微软雅黑";
+}
+.main{
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+}
+.main .top{
+	width: 100%;
+	height: 60px;
+	background: white;
+}
+.main .top input{
+	margin-top: 16px;
+	height: 25px;
+	line-height: 25px;
+}
+.main .top p{
+	margin-left: 17px;
+	float: left;
+	line-height: 27px;
+	color: #666666;
+}
+.main .top label{
+	width: 73px;
+}
+.main label{
+	line-height: 60px;
+	float: left;
+	color: #666666;
+	font-size: 18px;
+	width:72px;
+}
+.main label span{
+	float: right;
+}
+.main .top label{
+	margin-left: 17px;
+}
+.main input{
+	width: 60%;
+	height: 36%;
+	outline: none;
+	margin-top: 20px;
+	font-size: 18px;
+	float: left;
+	border: none;
+}
+.main .ip1{
+	margin-left: 15px;
+}
+.main .ip2{
+	margin-left: 15px;
+}
+.main .tab{
+	margin-top: 9px;
+	background: white;
+	width: 100%;
+	height: auto;
+}
+.main .tab p{
+	color: #666666;
+}
+.main .tab ul{
+	margin-left:-22px ;
+	width: 100%;
+	height: auto;
+}
+.tab ul li{
+	height: 60px;
+	width: 92%;
+	border-bottom:1px solid #e5e5e5;
+	list-style: none;
+}
+.tab ul :nth-child(3){
+	border-bottom:none;
+}
+.tab ul li .p1{
+	float: left;
+}
+.tab ul li .send{
+	float: right;
+	line-height: 60px;
+	color: #666666
+}
+.tab ul li input{
+	margin-top: 18px;
+}
+.main .tab .same{
+	width: 50%;
+}
+.main .tab .prov{
+	width: 39%;
+}
+.main button{
+	outline: none;
+	border: none;
+	width: 92%;
+	height: 7%;
+	border-radius: 6px;
+	background: #D0D0D0;
+	color: white;
+	text-align: center;
+	font-size: 19px;
+	margin-top: 5%;
+	margin-left: 4%;
+}
+@media screen and (max-width: 320px){
+	.main .top input{
+		margin-top: 16px;
+	}
+	.main .tab .prov{
+		width: 32%;
+	}
+}
